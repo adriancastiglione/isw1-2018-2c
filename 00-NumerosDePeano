@@ -1,0 +1,209 @@
+!classDefinition: #I category: #NumerosDePeano!
+DenotativeObject subclass: #I
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'NumerosDePeano'!
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'I class' category: #NumerosDePeano!
+I class
+	instanceVariableNames: ''!
+
+!I class methodsFor: 'as yet unclassified' stamp: 'AC 9/15/2018 12:44:52'!
+- unSustraendo
+
+	self error: 'Los números de Peano sólo caracterizan numeros naturales'! !
+
+!I class methodsFor: 'as yet unclassified' stamp: 'AC 9/15/2018 12:45:07'!
+descripcionDeErrorDeNumerosNegativosNoSoportados
+	^'Los números de Peano sólo caracterizan numeros naturales'! !
+
+!I class methodsFor: 'as yet unclassified' stamp: 'AC 9/15/2018 12:07:05'!
+next
+
+	^II! !
+
+!I class methodsFor: 'as yet unclassified' stamp: 'AC 9/15/2018 12:38:18'!
+previous
+
+	self error: 'El I no tiene previo'! !
+
+
+!I class methodsFor: 'Operadores' stamp: 'AC 9/15/2018 12:49:10'!
+* unFactor
+	^unFactor! !
+
+!I class methodsFor: 'Operadores' stamp: 'AC 9/15/2018 12:12:07'!
++ unSumando
+	^unSumando next! !
+
+
+!classDefinition: #II category: #NumerosDePeano!
+DenotativeObject subclass: #II
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'NumerosDePeano'!
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'II class' category: #NumerosDePeano!
+II class
+	instanceVariableNames: 'next prev'!
+
+!II class methodsFor: 'as yet unclassified' stamp: 'AC 9/16/2018 12:44:48'!
+initializeCollaboratorsFromFile
+	"Auto generated method for loading purposes - Do not modify it"
+
+	next := III.
+	prev := I.! !
+
+!II class methodsFor: 'as yet unclassified' stamp: 'AC 9/15/2018 12:36:23'!
+next
+
+	next ifNil: [
+		next _ self cloneNamed: self name, 'I'.
+		next previous: self.
+	].
+
+	^next! !
+
+!II class methodsFor: 'as yet unclassified' stamp: 'AC 9/15/2018 12:36:43'!
+previous
+	^prev! !
+
+!II class methodsFor: 'as yet unclassified' stamp: 'AC 9/15/2018 12:36:23'!
+previous: unNumeroDePeano
+
+	prev _ unNumeroDePeano! !
+
+
+!II class methodsFor: 'Operadores' stamp: 'AC 9/15/2018 12:55:33'!
+* unFactor
+	^self previous * unFactor + unFactor! !
+
+!II class methodsFor: 'Operadores' stamp: 'AC 9/15/2018 12:36:43'!
++ unSumando
+	^self previous + unSumando next! !
+
+!II class methodsFor: 'Operadores' stamp: 'AC 9/15/2018 12:36:43'!
+- unSustraendo
+	
+	unSustraendo = I ifTrue: [^self previous].
+	^self previous - unSustraendo previous.! !
+
+
+!classDefinition: #III category: #NumerosDePeano!
+DenotativeObject subclass: #III
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'NumerosDePeano'!
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'III class' category: #NumerosDePeano!
+III class
+	instanceVariableNames: 'next prev'!
+
+!III class methodsFor: 'as yet unclassified' stamp: 'AC 9/16/2018 12:44:48'!
+initializeCollaboratorsFromFile
+	"Auto generated method for loading purposes - Do not modify it"
+
+	next := IIII.
+	prev := II.! !
+
+!III class methodsFor: 'as yet unclassified' stamp: 'AC 9/15/2018 12:56:09'!
+next
+
+	next ifNil: [
+		next _ self cloneNamed: self name, 'I'.
+		next previous: self.
+	].
+
+	^next! !
+
+!III class methodsFor: 'as yet unclassified' stamp: 'AC 9/15/2018 12:56:09'!
+previous
+	^prev! !
+
+!III class methodsFor: 'as yet unclassified' stamp: 'AC 9/15/2018 12:56:09'!
+previous: unNumeroDePeano
+
+	prev _ unNumeroDePeano! !
+
+
+!III class methodsFor: 'Operadores' stamp: 'AC 9/15/2018 12:56:09'!
+* unFactor
+	^self previous * unFactor + unFactor! !
+
+!III class methodsFor: 'Operadores' stamp: 'AC 9/15/2018 12:56:09'!
++ unSumando
+	^self previous + unSumando next! !
+
+!III class methodsFor: 'Operadores' stamp: 'AC 9/15/2018 12:56:09'!
+- unSustraendo
+	
+	unSustraendo = I ifTrue: [^self previous].
+	^self previous - unSustraendo previous.! !
+
+
+!classDefinition: #IIII category: #NumerosDePeano!
+DenotativeObject subclass: #IIII
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'NumerosDePeano'!
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'IIII class' category: #NumerosDePeano!
+IIII class
+	instanceVariableNames: 'next prev'!
+
+!IIII class methodsFor: 'as yet unclassified' stamp: 'AC 9/16/2018 12:44:48'!
+initializeCollaboratorsFromFile
+	"Auto generated method for loading purposes - Do not modify it"
+
+	next := nil.
+	prev := III.! !
+
+!IIII class methodsFor: 'as yet unclassified' stamp: 'AC 9/15/2018 12:56:10'!
+next
+
+	next ifNil: [
+		next _ self cloneNamed: self name, 'I'.
+		next previous: self.
+	].
+
+	^next! !
+
+!IIII class methodsFor: 'as yet unclassified' stamp: 'AC 9/15/2018 12:56:10'!
+previous
+	^prev! !
+
+!IIII class methodsFor: 'as yet unclassified' stamp: 'AC 9/15/2018 12:56:10'!
+previous: unNumeroDePeano
+
+	prev _ unNumeroDePeano! !
+
+
+!IIII class methodsFor: 'Operadores' stamp: 'AC 9/15/2018 12:56:10'!
+* unFactor
+	^self previous * unFactor + unFactor! !
+
+!IIII class methodsFor: 'Operadores' stamp: 'AC 9/15/2018 12:56:10'!
++ unSumando
+	^self previous + unSumando next! !
+
+!IIII class methodsFor: 'Operadores' stamp: 'AC 9/15/2018 12:56:10'!
+- unSustraendo
+	
+	unSustraendo = I ifTrue: [^self previous].
+	^self previous - unSustraendo previous.! !
+
+II initializeAfterFileIn!
+III initializeAfterFileIn!
+IIII initializeAfterFileIn!
