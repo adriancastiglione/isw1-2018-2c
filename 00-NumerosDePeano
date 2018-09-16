@@ -11,14 +11,19 @@ DenotativeObject subclass: #I
 I class
 	instanceVariableNames: ''!
 
-!I class methodsFor: 'as yet unclassified' stamp: 'AC 9/15/2018 12:44:52'!
+!I class methodsFor: 'as yet unclassified' stamp: 'AC 9/16/2018 18:13:57'!
 - unSustraendo
 
-	self error: 'Los números de Peano sólo caracterizan numeros naturales'! !
+	self error: self descripcionDeErrorDeNumerosNegativosNoSoportados! !
 
-!I class methodsFor: 'as yet unclassified' stamp: 'AC 9/15/2018 12:45:07'!
+!I class methodsFor: 'as yet unclassified' stamp: 'AC 9/16/2018 18:26:36'!
+SubtractTo: unMinuendo
+
+	^unMinuendo previous! !
+
+!I class methodsFor: 'as yet unclassified' stamp: 'AC 9/16/2018 18:34:31'!
 descripcionDeErrorDeNumerosNegativosNoSoportados
-	^'Los números de Peano sólo caracterizan numeros naturales'! !
+	^'No se admiten numeros negativos ni el cero. Solo se admiten numeros naturales'! !
 
 !I class methodsFor: 'as yet unclassified' stamp: 'AC 9/15/2018 12:07:05'!
 next
@@ -53,14 +58,27 @@ DenotativeObject subclass: #II
 II class
 	instanceVariableNames: 'next prev'!
 
-!II class methodsFor: 'as yet unclassified' stamp: 'AC 9/16/2018 12:44:48'!
-initializeCollaboratorsFromFile
-	"Auto generated method for loading purposes - Do not modify it"
+!II class methodsFor: 'Operadores' stamp: 'AC 9/15/2018 12:55:33'!
+* unFactor
+	^self previous * unFactor + unFactor! !
 
-	next := III.
-	prev := I.! !
+!II class methodsFor: 'Operadores' stamp: 'AC 9/15/2018 12:36:43'!
++ unSumando
+	^self previous + unSumando next! !
 
-!II class methodsFor: 'as yet unclassified' stamp: 'AC 9/15/2018 12:36:23'!
+!II class methodsFor: 'Operadores' stamp: 'AC 9/16/2018 18:26:36'!
+- unSustraendo
+	
+	^unSustraendo SubtractTo: self! !
+
+
+!II class methodsFor: 'ParaImplementacion' stamp: 'AC 9/16/2018 18:31:20'!
+SubtractTo: unMinuendo
+
+	"este objeto es el sustraendo de una resta. Realizar la operacion unMinuendo - self"
+	^unMinuendo previous - self previous! !
+
+!II class methodsFor: 'ParaImplementacion' stamp: 'AC 9/15/2018 12:36:23'!
 next
 
 	next ifNil: [
@@ -70,29 +88,22 @@ next
 
 	^next! !
 
-!II class methodsFor: 'as yet unclassified' stamp: 'AC 9/15/2018 12:36:43'!
+!II class methodsFor: 'ParaImplementacion' stamp: 'AC 9/15/2018 12:36:43'!
 previous
 	^prev! !
 
-!II class methodsFor: 'as yet unclassified' stamp: 'AC 9/15/2018 12:36:23'!
+!II class methodsFor: 'ParaImplementacion' stamp: 'AC 9/15/2018 12:36:23'!
 previous: unNumeroDePeano
 
 	prev _ unNumeroDePeano! !
 
 
-!II class methodsFor: 'Operadores' stamp: 'AC 9/15/2018 12:55:33'!
-* unFactor
-	^self previous * unFactor + unFactor! !
+!II class methodsFor: 'as yet unclassified' stamp: 'AC 9/16/2018 18:50:37'!
+initializeCollaboratorsFromFile
+	"Auto generated method for loading purposes - Do not modify it"
 
-!II class methodsFor: 'Operadores' stamp: 'AC 9/15/2018 12:36:43'!
-+ unSumando
-	^self previous + unSumando next! !
-
-!II class methodsFor: 'Operadores' stamp: 'AC 9/15/2018 12:36:43'!
-- unSustraendo
-	
-	unSustraendo = I ifTrue: [^self previous].
-	^self previous - unSustraendo previous.! !
+	next := III.
+	prev := I.! !
 
 
 !classDefinition: #III category: #NumerosDePeano!
@@ -108,14 +119,27 @@ DenotativeObject subclass: #III
 III class
 	instanceVariableNames: 'next prev'!
 
-!III class methodsFor: 'as yet unclassified' stamp: 'AC 9/16/2018 12:44:48'!
-initializeCollaboratorsFromFile
-	"Auto generated method for loading purposes - Do not modify it"
+!III class methodsFor: 'Operadores' stamp: 'AC 9/16/2018 18:38:10'!
+* unFactor
+	^self previous * unFactor + unFactor! !
 
-	next := IIII.
-	prev := II.! !
+!III class methodsFor: 'Operadores' stamp: 'AC 9/16/2018 18:38:10'!
++ unSumando
+	^self previous + unSumando next! !
 
-!III class methodsFor: 'as yet unclassified' stamp: 'AC 9/15/2018 12:56:09'!
+!III class methodsFor: 'Operadores' stamp: 'AC 9/16/2018 18:38:10'!
+- unSustraendo
+	
+	^unSustraendo SubtractTo: self! !
+
+
+!III class methodsFor: 'ParaImplementacion' stamp: 'AC 9/16/2018 18:38:10'!
+SubtractTo: unMinuendo
+
+	"este objeto es el sustraendo de una resta. Realizar la operacion unMinuendo - self"
+	^unMinuendo previous - self previous! !
+
+!III class methodsFor: 'ParaImplementacion' stamp: 'AC 9/16/2018 18:38:11'!
 next
 
 	next ifNil: [
@@ -125,29 +149,22 @@ next
 
 	^next! !
 
-!III class methodsFor: 'as yet unclassified' stamp: 'AC 9/15/2018 12:56:09'!
+!III class methodsFor: 'ParaImplementacion' stamp: 'AC 9/16/2018 18:38:11'!
 previous
 	^prev! !
 
-!III class methodsFor: 'as yet unclassified' stamp: 'AC 9/15/2018 12:56:09'!
+!III class methodsFor: 'ParaImplementacion' stamp: 'AC 9/16/2018 18:38:11'!
 previous: unNumeroDePeano
 
 	prev _ unNumeroDePeano! !
 
 
-!III class methodsFor: 'Operadores' stamp: 'AC 9/15/2018 12:56:09'!
-* unFactor
-	^self previous * unFactor + unFactor! !
+!III class methodsFor: 'as yet unclassified' stamp: 'AC 9/16/2018 18:50:37'!
+initializeCollaboratorsFromFile
+	"Auto generated method for loading purposes - Do not modify it"
 
-!III class methodsFor: 'Operadores' stamp: 'AC 9/15/2018 12:56:09'!
-+ unSumando
-	^self previous + unSumando next! !
-
-!III class methodsFor: 'Operadores' stamp: 'AC 9/15/2018 12:56:09'!
-- unSustraendo
-	
-	unSustraendo = I ifTrue: [^self previous].
-	^self previous - unSustraendo previous.! !
+	next := IIII.
+	prev := II.! !
 
 
 !classDefinition: #IIII category: #NumerosDePeano!
@@ -163,14 +180,27 @@ DenotativeObject subclass: #IIII
 IIII class
 	instanceVariableNames: 'next prev'!
 
-!IIII class methodsFor: 'as yet unclassified' stamp: 'AC 9/16/2018 12:44:48'!
-initializeCollaboratorsFromFile
-	"Auto generated method for loading purposes - Do not modify it"
+!IIII class methodsFor: 'Operadores' stamp: 'AC 9/16/2018 18:38:11'!
+* unFactor
+	^self previous * unFactor + unFactor! !
 
-	next := nil.
-	prev := III.! !
+!IIII class methodsFor: 'Operadores' stamp: 'AC 9/16/2018 18:38:11'!
++ unSumando
+	^self previous + unSumando next! !
 
-!IIII class methodsFor: 'as yet unclassified' stamp: 'AC 9/15/2018 12:56:10'!
+!IIII class methodsFor: 'Operadores' stamp: 'AC 9/16/2018 18:38:11'!
+- unSustraendo
+	
+	^unSustraendo SubtractTo: self! !
+
+
+!IIII class methodsFor: 'ParaImplementacion' stamp: 'AC 9/16/2018 18:38:11'!
+SubtractTo: unMinuendo
+
+	"este objeto es el sustraendo de una resta. Realizar la operacion unMinuendo - self"
+	^unMinuendo previous - self previous! !
+
+!IIII class methodsFor: 'ParaImplementacion' stamp: 'AC 9/16/2018 18:38:11'!
 next
 
 	next ifNil: [
@@ -180,29 +210,22 @@ next
 
 	^next! !
 
-!IIII class methodsFor: 'as yet unclassified' stamp: 'AC 9/15/2018 12:56:10'!
+!IIII class methodsFor: 'ParaImplementacion' stamp: 'AC 9/16/2018 18:38:11'!
 previous
 	^prev! !
 
-!IIII class methodsFor: 'as yet unclassified' stamp: 'AC 9/15/2018 12:56:10'!
+!IIII class methodsFor: 'ParaImplementacion' stamp: 'AC 9/16/2018 18:38:11'!
 previous: unNumeroDePeano
 
 	prev _ unNumeroDePeano! !
 
 
-!IIII class methodsFor: 'Operadores' stamp: 'AC 9/15/2018 12:56:10'!
-* unFactor
-	^self previous * unFactor + unFactor! !
+!IIII class methodsFor: 'as yet unclassified' stamp: 'AC 9/16/2018 18:50:37'!
+initializeCollaboratorsFromFile
+	"Auto generated method for loading purposes - Do not modify it"
 
-!IIII class methodsFor: 'Operadores' stamp: 'AC 9/15/2018 12:56:10'!
-+ unSumando
-	^self previous + unSumando next! !
-
-!IIII class methodsFor: 'Operadores' stamp: 'AC 9/15/2018 12:56:10'!
-- unSustraendo
-	
-	unSustraendo = I ifTrue: [^self previous].
-	^self previous - unSustraendo previous.! !
+	next := nil.
+	prev := III.! !
 
 II initializeAfterFileIn!
 III initializeAfterFileIn!
