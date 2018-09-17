@@ -11,31 +11,6 @@ DenotativeObject subclass: #I
 I class
 	instanceVariableNames: ''!
 
-!I class methodsFor: 'as yet unclassified' stamp: 'AC 9/16/2018 18:13:57'!
-- unSustraendo
-
-	self error: self descripcionDeErrorDeNumerosNegativosNoSoportados! !
-
-!I class methodsFor: 'as yet unclassified' stamp: 'AC 9/16/2018 18:26:36'!
-SubtractTo: unMinuendo
-
-	^unMinuendo previous! !
-
-!I class methodsFor: 'as yet unclassified' stamp: 'AC 9/16/2018 18:34:31'!
-descripcionDeErrorDeNumerosNegativosNoSoportados
-	^'No se admiten numeros negativos ni el cero. Solo se admiten numeros naturales'! !
-
-!I class methodsFor: 'as yet unclassified' stamp: 'AC 9/15/2018 12:07:05'!
-next
-
-	^II! !
-
-!I class methodsFor: 'as yet unclassified' stamp: 'AC 9/15/2018 12:38:18'!
-previous
-
-	self error: 'El I no tiene previo'! !
-
-
 !I class methodsFor: 'Operadores' stamp: 'AC 9/15/2018 12:49:10'!
 * unFactor
 	^unFactor! !
@@ -43,6 +18,50 @@ previous
 !I class methodsFor: 'Operadores' stamp: 'AC 9/15/2018 12:12:07'!
 + unSumando
 	^unSumando next! !
+
+!I class methodsFor: 'Operadores' stamp: 'AC 9/16/2018 18:13:57'!
+- unSustraendo
+
+	self error: self descripcionDeErrorDeNumerosNegativosNoSoportados! !
+
+!I class methodsFor: 'Operadores' stamp: 'AC 9/16/2018 23:05:42'!
+/ unDivisor
+	
+	unDivisor = I ifTrue: [^I].
+	self error: self descripcionDeErrorSoloSeAdmiteDivisionConResultadoNatural! !
+
+!I class methodsFor: 'Operadores' stamp: 'AC 9/16/2018 22:42:45'!
+< unNumeroDePeano
+	
+	^(unNumeroDePeano = I) not! !
+
+
+!I class methodsFor: 'ParaImplementacion' stamp: 'AC 9/16/2018 18:26:36'!
+SubtractTo: unMinuendo
+
+	^unMinuendo previous! !
+
+!I class methodsFor: 'ParaImplementacion' stamp: 'AC 9/16/2018 23:05:56'!
+descripcionDeErrorDeNoSePuedeDividirPorUnNumeroMayor
+	^self descripcionDeErrorSoloSeAdmiteDivisionConResultadoNatural ! !
+
+!I class methodsFor: 'ParaImplementacion' stamp: 'AC 9/16/2018 18:34:31'!
+descripcionDeErrorDeNumerosNegativosNoSoportados
+	^'No se admiten numeros negativos ni el cero. Solo se admiten numeros naturales'! !
+
+!I class methodsFor: 'ParaImplementacion' stamp: 'AC 9/16/2018 23:05:42'!
+descripcionDeErrorSoloSeAdmiteDivisionConResultadoNatural
+	^'Solo se admite divisiones con resultado natural'! !
+
+!I class methodsFor: 'ParaImplementacion' stamp: 'AC 9/15/2018 12:07:05'!
+next
+
+	^II! !
+
+!I class methodsFor: 'ParaImplementacion' stamp: 'AC 9/15/2018 12:38:18'!
+previous
+
+	self error: 'El I no tiene previo'! !
 
 
 !classDefinition: #II category: #NumerosDePeano!
@@ -71,12 +90,33 @@ II class
 	
 	^unSustraendo SubtractTo: self! !
 
+!II class methodsFor: 'Operadores' stamp: 'AC 9/16/2018 23:05:42'!
+/ unDivisor
+	self < unDivisor ifTrue:[self error: self descripcionDeErrorSoloSeAdmiteDivisionConResultadoNatural].	
+	unDivisor = I ifTrue: [^self].
+	self = unDivisor ifTrue: [^I].
+	^((self - unDivisor) / unDivisor) next! !
+
+!II class methodsFor: 'Operadores' stamp: 'AC 9/16/2018 22:44:04'!
+< unNumeroDePeano
+	
+	unNumeroDePeano = I ifTrue: [^false].
+	^self previous < unNumeroDePeano previous! !
+
 
 !II class methodsFor: 'ParaImplementacion' stamp: 'AC 9/16/2018 18:31:20'!
 SubtractTo: unMinuendo
 
 	"este objeto es el sustraendo de una resta. Realizar la operacion unMinuendo - self"
 	^unMinuendo previous - self previous! !
+
+!II class methodsFor: 'ParaImplementacion' stamp: 'AC 9/16/2018 23:07:30'!
+descripcionDeErrorDeNoSePuedeDividirPorUnNumeroMayor
+	^self descripcionDeErrorSoloSeAdmiteDivisionConResultadoNatural ! !
+
+!II class methodsFor: 'ParaImplementacion' stamp: 'AC 9/16/2018 23:05:42'!
+descripcionDeErrorSoloSeAdmiteDivisionConResultadoNatural
+	^'Solo se admite divisiones con resultado natural'! !
 
 !II class methodsFor: 'ParaImplementacion' stamp: 'AC 9/15/2018 12:36:23'!
 next
@@ -98,7 +138,7 @@ previous: unNumeroDePeano
 	prev _ unNumeroDePeano! !
 
 
-!II class methodsFor: 'as yet unclassified' stamp: 'AC 9/16/2018 18:50:37'!
+!II class methodsFor: 'as yet unclassified' stamp: 'AC 9/16/2018 23:08:27'!
 initializeCollaboratorsFromFile
 	"Auto generated method for loading purposes - Do not modify it"
 
@@ -119,27 +159,48 @@ DenotativeObject subclass: #III
 III class
 	instanceVariableNames: 'next prev'!
 
-!III class methodsFor: 'Operadores' stamp: 'AC 9/16/2018 18:38:10'!
+!III class methodsFor: 'Operadores' stamp: 'AC 9/16/2018 23:07:39'!
 * unFactor
 	^self previous * unFactor + unFactor! !
 
-!III class methodsFor: 'Operadores' stamp: 'AC 9/16/2018 18:38:10'!
+!III class methodsFor: 'Operadores' stamp: 'AC 9/16/2018 23:07:39'!
 + unSumando
 	^self previous + unSumando next! !
 
-!III class methodsFor: 'Operadores' stamp: 'AC 9/16/2018 18:38:10'!
+!III class methodsFor: 'Operadores' stamp: 'AC 9/16/2018 23:07:39'!
 - unSustraendo
 	
 	^unSustraendo SubtractTo: self! !
 
+!III class methodsFor: 'Operadores' stamp: 'AC 9/16/2018 23:07:39'!
+/ unDivisor
+	self < unDivisor ifTrue:[self error: self descripcionDeErrorSoloSeAdmiteDivisionConResultadoNatural].	
+	unDivisor = I ifTrue: [^self].
+	self = unDivisor ifTrue: [^I].
+	^((self - unDivisor) / unDivisor) next! !
 
-!III class methodsFor: 'ParaImplementacion' stamp: 'AC 9/16/2018 18:38:10'!
+!III class methodsFor: 'Operadores' stamp: 'AC 9/16/2018 23:07:39'!
+< unNumeroDePeano
+	
+	unNumeroDePeano = I ifTrue: [^false].
+	^self previous < unNumeroDePeano previous! !
+
+
+!III class methodsFor: 'ParaImplementacion' stamp: 'AC 9/16/2018 23:07:39'!
 SubtractTo: unMinuendo
 
 	"este objeto es el sustraendo de una resta. Realizar la operacion unMinuendo - self"
 	^unMinuendo previous - self previous! !
 
-!III class methodsFor: 'ParaImplementacion' stamp: 'AC 9/16/2018 18:38:11'!
+!III class methodsFor: 'ParaImplementacion' stamp: 'AC 9/16/2018 23:07:39'!
+descripcionDeErrorDeNoSePuedeDividirPorUnNumeroMayor
+	^self descripcionDeErrorSoloSeAdmiteDivisionConResultadoNatural ! !
+
+!III class methodsFor: 'ParaImplementacion' stamp: 'AC 9/16/2018 23:07:39'!
+descripcionDeErrorSoloSeAdmiteDivisionConResultadoNatural
+	^'Solo se admite divisiones con resultado natural'! !
+
+!III class methodsFor: 'ParaImplementacion' stamp: 'AC 9/16/2018 23:07:39'!
 next
 
 	next ifNil: [
@@ -149,17 +210,17 @@ next
 
 	^next! !
 
-!III class methodsFor: 'ParaImplementacion' stamp: 'AC 9/16/2018 18:38:11'!
+!III class methodsFor: 'ParaImplementacion' stamp: 'AC 9/16/2018 23:07:40'!
 previous
 	^prev! !
 
-!III class methodsFor: 'ParaImplementacion' stamp: 'AC 9/16/2018 18:38:11'!
+!III class methodsFor: 'ParaImplementacion' stamp: 'AC 9/16/2018 23:07:40'!
 previous: unNumeroDePeano
 
 	prev _ unNumeroDePeano! !
 
 
-!III class methodsFor: 'as yet unclassified' stamp: 'AC 9/16/2018 18:50:37'!
+!III class methodsFor: 'as yet unclassified' stamp: 'AC 9/16/2018 23:08:27'!
 initializeCollaboratorsFromFile
 	"Auto generated method for loading purposes - Do not modify it"
 
@@ -180,27 +241,48 @@ DenotativeObject subclass: #IIII
 IIII class
 	instanceVariableNames: 'next prev'!
 
-!IIII class methodsFor: 'Operadores' stamp: 'AC 9/16/2018 18:38:11'!
+!IIII class methodsFor: 'Operadores' stamp: 'AC 9/16/2018 23:07:40'!
 * unFactor
 	^self previous * unFactor + unFactor! !
 
-!IIII class methodsFor: 'Operadores' stamp: 'AC 9/16/2018 18:38:11'!
+!IIII class methodsFor: 'Operadores' stamp: 'AC 9/16/2018 23:07:40'!
 + unSumando
 	^self previous + unSumando next! !
 
-!IIII class methodsFor: 'Operadores' stamp: 'AC 9/16/2018 18:38:11'!
+!IIII class methodsFor: 'Operadores' stamp: 'AC 9/16/2018 23:07:40'!
 - unSustraendo
 	
 	^unSustraendo SubtractTo: self! !
 
+!IIII class methodsFor: 'Operadores' stamp: 'AC 9/16/2018 23:07:40'!
+/ unDivisor
+	self < unDivisor ifTrue:[self error: self descripcionDeErrorSoloSeAdmiteDivisionConResultadoNatural].	
+	unDivisor = I ifTrue: [^self].
+	self = unDivisor ifTrue: [^I].
+	^((self - unDivisor) / unDivisor) next! !
 
-!IIII class methodsFor: 'ParaImplementacion' stamp: 'AC 9/16/2018 18:38:11'!
+!IIII class methodsFor: 'Operadores' stamp: 'AC 9/16/2018 23:07:40'!
+< unNumeroDePeano
+	
+	unNumeroDePeano = I ifTrue: [^false].
+	^self previous < unNumeroDePeano previous! !
+
+
+!IIII class methodsFor: 'ParaImplementacion' stamp: 'AC 9/16/2018 23:07:40'!
 SubtractTo: unMinuendo
 
 	"este objeto es el sustraendo de una resta. Realizar la operacion unMinuendo - self"
 	^unMinuendo previous - self previous! !
 
-!IIII class methodsFor: 'ParaImplementacion' stamp: 'AC 9/16/2018 18:38:11'!
+!IIII class methodsFor: 'ParaImplementacion' stamp: 'AC 9/16/2018 23:07:40'!
+descripcionDeErrorDeNoSePuedeDividirPorUnNumeroMayor
+	^self descripcionDeErrorSoloSeAdmiteDivisionConResultadoNatural ! !
+
+!IIII class methodsFor: 'ParaImplementacion' stamp: 'AC 9/16/2018 23:07:40'!
+descripcionDeErrorSoloSeAdmiteDivisionConResultadoNatural
+	^'Solo se admite divisiones con resultado natural'! !
+
+!IIII class methodsFor: 'ParaImplementacion' stamp: 'AC 9/16/2018 23:07:40'!
 next
 
 	next ifNil: [
@@ -210,17 +292,17 @@ next
 
 	^next! !
 
-!IIII class methodsFor: 'ParaImplementacion' stamp: 'AC 9/16/2018 18:38:11'!
+!IIII class methodsFor: 'ParaImplementacion' stamp: 'AC 9/16/2018 23:07:40'!
 previous
 	^prev! !
 
-!IIII class methodsFor: 'ParaImplementacion' stamp: 'AC 9/16/2018 18:38:11'!
+!IIII class methodsFor: 'ParaImplementacion' stamp: 'AC 9/16/2018 23:07:40'!
 previous: unNumeroDePeano
 
 	prev _ unNumeroDePeano! !
 
 
-!IIII class methodsFor: 'as yet unclassified' stamp: 'AC 9/16/2018 18:50:37'!
+!IIII class methodsFor: 'as yet unclassified' stamp: 'AC 9/16/2018 23:08:27'!
 initializeCollaboratorsFromFile
 	"Auto generated method for loading purposes - Do not modify it"
 
