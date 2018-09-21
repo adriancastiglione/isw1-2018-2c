@@ -16,80 +16,73 @@ Error subclass: #NotFound
 
 !classDefinition: #CustomerBookTest category: #'CodigoRepetido-Ejercicio'!
 TestCase subclass: #CustomerBookTest
-	instanceVariableNames: ''
+	instanceVariableNames: 'customerBook'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'CodigoRepetido-Ejercicio'!
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'AC 9/20/2018 21:56:01'!
-assertThat: aMethodThatFails failsWithErrorType: errorType andExecute: aBlockToExecuteOnError"andVerifyThat: c"
+!CustomerBookTest methodsFor: 'testing' stamp: 'AC 9/21/2018 17:03:02'!
+assertThat: aMethodThatFails failsWithErrorType: errorType thenExecute: aMethodToExecuteOnError"andVerifyThat: c"
 
 	[ aMethodThatFails value.
 	self fail ]
 		on: errorType
-		do: aBlockToExecuteOnError! !
+		do: aMethodToExecuteOnError! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'AC 9/20/2018 21:00:23'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'AC 9/21/2018 16:56:32'!
+setUp
+
+	customerBook := CustomerBook  new.! !
+
+!CustomerBookTest methodsFor: 'testing' stamp: 'AC 9/21/2018 16:57:48'!
 test01AddingCustomerShouldNotTakeMoreThan50Milliseconds
 
-	| customerBook |
-	
-	customerBook := CustomerBook  new.
-	self meassureMillisecondsOf: [customerBook addCustomerNamed: 'John Lennon'.] notGreaterThan: (50*millisecond).
+	self assertExecutionTimeOf: [customerBook addCustomerNamed: 'John Lennon'.] notGreaterThanMilliseconds: 50.
 ! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'AC 9/20/2018 21:05:51'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'AC 9/21/2018 16:57:57'!
 test02RemovingCustomerShouldNotTakeMoreThan100Milliseconds
 
+	|paulMcCartney|
 
-	| customerBook paulMcCartney |
-	
-	customerBook := CustomerBook  new.
 	paulMcCartney := 'Paul McCartney'.
 	customerBook addCustomerNamed: paulMcCartney.
 	
-	self meassureMillisecondsOf: [customerBook removeCustomerNamed: paulMcCartney.] notGreaterThan: (100*millisecond).
+	self assertExecutionTimeOf: [customerBook removeCustomerNamed: paulMcCartney.] notGreaterThanMilliseconds: 100.
 	
 	
 ! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'AC 9/20/2018 21:54:49'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'AC 9/21/2018 17:03:12'!
 test03CanNotAddACustomerWithEmptyName 
-
-	| customerBook |
-			
-	customerBook := CustomerBook new.
 
 	self assertThat:[customerBook addCustomerNamed: ''] 
 		  failsWithErrorType: Error 
-		  andExecute: [ :anError | 
+		  thenExecute: [ :anError | 
 			self assert: anError messageText = CustomerBook customerCanNotBeEmptyErrorMessage.
 			self assert: customerBook isEmpty.]
 ! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'HAW 8/28/2017 08:57:25'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'AC 9/21/2018 17:03:17'!
 test04CanNotRemoveAnInvalidCustomer
 	
-	| customerBook johnLennon |
-			
-	customerBook := CustomerBook new.
+	|johnLennon|
+	
 	johnLennon := 'John Lennon'.
 	customerBook addCustomerNamed: johnLennon.
 	
-	[ customerBook removeCustomerNamed: 'Paul McCartney'.
-	self fail ]
-		on: NotFound 
-		do: [ :anError | 
-			self assert: customerBook numberOfCustomers = 1.
-			self assert: (customerBook includesCustomerNamed: johnLennon) ]
+	self assertThat:  [customerBook removeCustomerNamed: 'Paul McCartney'.] 
+		  failsWithErrorType: NotFound
+		  thenExecute: [ :anError | 
+						self assert: customerBook numberOfCustomers = 1.
+						self assert: (customerBook includesCustomerNamed: johnLennon) ]
 ! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'HAW 9/20/2018 09:21:59'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'AC 9/21/2018 16:58:16'!
 test05SuspendingACustomerShouldNotRemoveItFromCustomerBook
 
-	| customerBook paulMcCartney|
+	|paulMcCartney|
 	
-	customerBook := CustomerBook  new.
 	paulMcCartney := 'Paul McCartney'.
 	
 	customerBook addCustomerNamed: paulMcCartney.
@@ -104,12 +97,11 @@ test05SuspendingACustomerShouldNotRemoveItFromCustomerBook
 	
 ! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'HAW 9/20/2018 09:23:02'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'AC 9/21/2018 16:58:27'!
 test06RemovingASuspendedCustomerShouldRemoveItFromCustomerBook
 
-	| customerBook paulMcCartney|
-	
-	customerBook := CustomerBook  new.
+	| paulMcCartney|
+
 	paulMcCartney := 'Paul McCartney'.
 	
 	customerBook addCustomerNamed: paulMcCartney.
@@ -125,12 +117,11 @@ test06RemovingASuspendedCustomerShouldRemoveItFromCustomerBook
 	
 ! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'NR 9/19/2018 17:55:41'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'AC 9/21/2018 16:58:39'!
 test07CanNotSuspendAnInvalidCustomer
 	
-	| customerBook johnLennon |
+	| johnLennon |
 			
-	customerBook := CustomerBook new.
 	johnLennon := 'John Lennon'.
 	customerBook addCustomerNamed: johnLennon.
 	
@@ -142,12 +133,11 @@ test07CanNotSuspendAnInvalidCustomer
 			self assert: (customerBook includesCustomerNamed: johnLennon) ]
 ! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'NR 9/19/2018 17:57:11'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'AC 9/21/2018 16:58:48'!
 test08CanNotSuspendAnAlreadySuspendedCustomer
 	
-	| customerBook johnLennon |
-			
-	customerBook := CustomerBook new.
+	| johnLennon |
+
 	johnLennon := 'John Lennon'.
 	customerBook addCustomerNamed: johnLennon.
 	customerBook suspendCustomerNamed: johnLennon.
@@ -161,8 +151,8 @@ test08CanNotSuspendAnAlreadySuspendedCustomer
 ! !
 
 
-!CustomerBookTest methodsFor: 'as yet unclassified' stamp: 'AC 9/20/2018 21:03:43'!
-meassureMillisecondsOf: methodToBeMeaussured notGreaterThan: timeLimitInMillliseconds
+!CustomerBookTest methodsFor: 'as yet unclassified' stamp: 'AC 9/21/2018 16:47:48'!
+assertExecutionTimeOf: methodToBeMeaussured notGreaterThanMilliseconds: timeLimit
 
 	| millisecondsAfterRunning millisecondsBeforeRunning |
 
@@ -170,7 +160,7 @@ meassureMillisecondsOf: methodToBeMeaussured notGreaterThan: timeLimitInMilllise
 	methodToBeMeaussured value.
 	millisecondsAfterRunning := Time millisecondClockValue * millisecond.
 	
-	self assert: (millisecondsAfterRunning-millisecondsBeforeRunning) < timeLimitInMillliseconds! !
+	self assert: (millisecondsAfterRunning-millisecondsBeforeRunning) < (timeLimit * millisecond)! !
 
 
 !classDefinition: #CustomerBook category: #'CodigoRepetido-Ejercicio'!
