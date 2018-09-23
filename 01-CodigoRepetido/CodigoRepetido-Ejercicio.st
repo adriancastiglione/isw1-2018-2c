@@ -285,3 +285,4 @@ customerAlreadyExistsErrorMessage
 customerCanNotBeEmptyErrorMessage
 
 	^'Customer name cannot be empty'! !
+	
