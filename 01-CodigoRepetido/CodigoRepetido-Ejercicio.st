@@ -20,6 +20,16 @@ TestCase subclass: #CustomerBookTest
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'CodigoRepetido-Ejercicio'!
+	
+!CustomerBookTest methodsFor: 'testing' stamp: 'Lucas 9/23/2018 21:21:38'!
+notChangeAmountAndNameOfCustomerWithErrorTypeCantSuspendIfAssertThat: aMethodThatFails		
+		
+	self assertThat:[aMethodThatFails value] 
+		  failsWithErrorType: CantSuspend 
+		  thenExecute: [ :anError | 
+			self assert: customerBook numberOfCustomers = 1.
+			self assert: (customerBook includesCustomerNamed: johnLennon).]
+! !
 
 !CustomerBookTest methodsFor: 'testing' stamp: 'AC 9/23/2018 20:06:10'!
 setUp
@@ -89,38 +99,22 @@ test06RemovingASuspendedCustomerShouldRemoveItFromCustomerBook
 	
 ! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'AC 9/21/2018 16:58:39'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'Lucas 9/23/2018 21:22:25'!
 test07CanNotSuspendAnInvalidCustomer
 	
-	| johnLennon |
-			
-	johnLennon := 'John Lennon'.
-	customerBook addCustomerNamed: johnLennon.
+	self addIntoBookCustomerNamed: johnLennon.
 	
-	[ customerBook suspendCustomerNamed: 'Paul McCartney'.
-	self fail ]
-		on: CantSuspend 
-		do: [ :anError | 
-			self assert: customerBook numberOfCustomers = 1.
-			self assert: (customerBook includesCustomerNamed: johnLennon) ]
+	self notChangeAmountAndNameOfCustomerWithErrorTypeCantSuspendIfAssertThat: [customerBook suspendCustomerNamed: 'Paul McCartney'.]
+
 ! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'AC 9/21/2018 16:58:48'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'Lucas 9/23/2018 21:22:30'!
 test08CanNotSuspendAnAlreadySuspendedCustomer
 	
-	| johnLennon |
-
-	johnLennon := 'John Lennon'.
-	customerBook addCustomerNamed: johnLennon.
-	customerBook suspendCustomerNamed: johnLennon.
+	self addIntoBookAndSuspendCustomerNamed: johnLennon.
 	
-	[ customerBook suspendCustomerNamed: johnLennon.
-	self fail ]
-		on: CantSuspend 
-		do: [ :anError | 
-			self assert: customerBook numberOfCustomers = 1.
-			self assert: (customerBook includesCustomerNamed: johnLennon) ]
-! !
+	self notChangeAmountAndNameOfCustomerWithErrorTypeCantSuspendIfAssertThat: [customerBook suspendCustomerNamed: johnLennon.]
+	! !
 
 
 !CustomerBookTest methodsFor: 'assertions' stamp: 'AC 9/21/2018 16:47:48'!
