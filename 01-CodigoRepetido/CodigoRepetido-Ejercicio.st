@@ -173,6 +173,11 @@ addIntoBookAndSuspendCustomerNamed: aName
 	
 	customerBook addCustomerNamed: aName.
 	customerBook suspendCustomerNamed: aName.! !
+	
+!CustomerBookTest methodsFor: 'operations' stamp: 'Lucas 9/23/2018 20:46:31'!
+addIntoBookCustomerNamed: aName
+	
+	customerBook addCustomerNamed: aName.! !
 
 
 !classDefinition: #CustomerBook category: #'CodigoRepetido-Ejercicio'!
