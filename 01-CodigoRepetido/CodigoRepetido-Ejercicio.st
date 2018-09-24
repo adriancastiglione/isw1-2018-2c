@@ -20,16 +20,6 @@ TestCase subclass: #CustomerBookTest
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'CodigoRepetido-Ejercicio'!
-	
-!CustomerBookTest methodsFor: 'testing' stamp: 'Lucas 9/23/2018 21:21:38'!
-notChangeAmountAndNameOfCustomerWithErrorTypeCantSuspendIfAssertThat: aMethodThatFails		
-		
-	self assertThat:[aMethodThatFails value] 
-		  failsWithErrorType: CantSuspend 
-		  thenExecute: [ :anError | 
-			self assert: customerBook numberOfCustomers = 1.
-			self assert: (customerBook includesCustomerNamed: johnLennon).]
-! !
 
 !CustomerBookTest methodsFor: 'testing' stamp: 'AC 9/23/2018 20:06:10'!
 setUp
@@ -99,22 +89,20 @@ test06RemovingASuspendedCustomerShouldRemoveItFromCustomerBook
 	
 ! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'Lucas 9/23/2018 21:22:25'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'AC 9/23/2018 23:13:01'!
 test07CanNotSuspendAnInvalidCustomer
 	
-	self addIntoBookCustomerNamed: johnLennon.
+	customerBook addCustomerNamed: johnLennon.
 	
-	self notChangeAmountAndNameOfCustomerWithErrorTypeCantSuspendIfAssertThat: [customerBook suspendCustomerNamed: 'Paul McCartney'.]
-
+	"self notChangeAmountAndNameOfCustomerWithErrorTypeCantSuspendIfAssertThat: [customerBook suspendCustomerNamed: 'Paul McCartney'.]"
+    	self inBookWithOnlyOneCustomerNamed: johnLennon assertFailureWithErrorCantSuspendOf: [customerBook suspendCustomerNamed: paulMcCartney .].
 ! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'Lucas 9/23/2018 21:22:30'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'AC 9/23/2018 23:10:16'!
 test08CanNotSuspendAnAlreadySuspendedCustomer
 	
 	self addIntoBookAndSuspendCustomerNamed: johnLennon.
-	
-	self notChangeAmountAndNameOfCustomerWithErrorTypeCantSuspendIfAssertThat: [customerBook suspendCustomerNamed: johnLennon.]
-	! !
+	self  inBookWithOnlyOneCustomerNamed: johnLennon assertFailureWithErrorCantSuspendOf: [customerBook suspendCustomerNamed: johnLennon.]! !
 
 
 !CustomerBookTest methodsFor: 'assertions' stamp: 'AC 9/21/2018 16:47:48'!
@@ -128,21 +116,14 @@ assertExecutionTimeOf: methodToBeMeaussured notGreaterThanMilliseconds: timeLimi
 	
 	self assert: (millisecondsAfterRunning-millisecondsBeforeRunning) < (timeLimit * millisecond)! !
 
-!CustomerBookTest methodsFor: 'assertions' stamp: 'AC 9/23/2018 19:56:23'!
+!CustomerBookTest methodsFor: 'assertions' stamp: 'AC 9/23/2018 23:14:30'!
 assertOnCustomersBookActiveCountEquals: activeCustomersCount andSuspendedCountEquals: suspendedCustomersCount andTotalCountEquals: totalCustomersCount andAssertThat: anAssertionToValue
 
 	self assert: activeCustomersCount equals: customerBook numberOfActiveCustomers.
 	self assert: suspendedCustomersCount equals: customerBook numberOfSuspendedCustomers.
 	self assert: totalCustomersCount equals: customerBook numberOfCustomers.
 	anAssertionToValue value
-	
-	"
-	customerBelongs
-		ifTrue: [self assert: (customerBook includesCustomerNamed: 'paulMcCartney').]
-		ifFalse: [self deny: (customerBook includesCustomerNamed: 'paulMcCartney').]"
-	
 
-	
 ! !
 
 !CustomerBookTest methodsFor: 'assertions' stamp: 'AC 9/23/2018 19:56:45'!
@@ -159,13 +140,23 @@ assertOnCustomersBookActiveCountEquals: activeCustomersCount andSuspendedCountEq
 		
 ! !
 
-!CustomerBookTest methodsFor: 'assertions' stamp: 'AC 9/21/2018 17:03:02'!
-assertThat: aMethodThatFails failsWithErrorType: errorType thenExecute: aMethodToExecuteOnError"andVerifyThat: c"
+!CustomerBookTest methodsFor: 'assertions' stamp: 'AC 9/23/2018 23:15:22'!
+assertThat: aMethodThatFails failsWithErrorType: errorType thenExecute: aMethodToExecuteOnError
 
 	[ aMethodThatFails value.
 	self fail ]
 		on: errorType
 		do: aMethodToExecuteOnError! !
+
+!CustomerBookTest methodsFor: 'assertions' stamp: 'AC 9/23/2018 23:12:10'!
+inBookWithOnlyOneCustomerNamed: aName assertFailureWithErrorCantSuspendOf: aMethodThatFails
+		
+	self assertThat:[aMethodThatFails value] 
+		  failsWithErrorType: CantSuspend 
+		  thenExecute: [ :anError | 
+			self assert: customerBook numberOfCustomers = 1.
+			self assert: (customerBook includesCustomerNamed: aName).]
+! !
 
 
 !CustomerBookTest methodsFor: 'operations' stamp: 'AC 9/23/2018 20:08:33'!
@@ -173,11 +164,6 @@ addIntoBookAndSuspendCustomerNamed: aName
 	
 	customerBook addCustomerNamed: aName.
 	customerBook suspendCustomerNamed: aName.! !
-	
-!CustomerBookTest methodsFor: 'operations' stamp: 'Lucas 9/23/2018 20:46:31'!
-addIntoBookCustomerNamed: aName
-	
-	customerBook addCustomerNamed: aName.! !
 
 
 !classDefinition: #CustomerBook category: #'CodigoRepetido-Ejercicio'!
@@ -272,6 +258,19 @@ suspendCustomerNamed: aName
 	
 	suspended add: aName
 ! !
+
+
+!CustomerBook methodsFor: 'customer management - private' stamp: 'AC 9/23/2018 21:34:49'!
+customerNamed: aName isSuccefullyRemovedFrom: aCollectionOfCustomers
+
+	"Decidimos reemplazar el codigo anterior por este porque consideramos que es mas declarativo."
+
+	|index|
+
+	index := aCollectionOfCustomers findFirst:[:a | a = aName].   
+	index ~= 0 ifTrue:[aCollectionOfCustomers removeAt: index.].
+			
+	^index ~= 0! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
