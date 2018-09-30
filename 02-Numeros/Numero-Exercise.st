@@ -520,10 +520,10 @@ subtractionToEntero: aMinuendo
 
 	^ self class with: aMinuendo integerValue - value! !
 
-!Entero methodsFor: 'arithmetic operations - private' stamp: 'Lucas 9/30/2018 17:33:56'!
+!Entero methodsFor: 'arithmetic operations - private' stamp: 'AC 9/30/2018 20:40:09'!
 subtractionToFraccion: aMinuendo 
 	
-	^ self class with: aMinuendo numerator - (aMinuendo denominator * value ) / aMinuendo denominator
+	^ Fraccion with: aMinuendo numerator - (aMinuendo denominator * self ) over: aMinuendo denominator
 	
 
 	! !
@@ -810,6 +810,20 @@ divideToFraccion: aDividend
 	^(aDividend numerator * denominator) / (aDividend denominator * numerator)
 
 	
+! !
+
+!Fraccion methodsFor: 'arithmetic operations - private' stamp: 'AC 9/30/2018 20:19:33'!
+multiplyToEntero: aMultiplier
+
+	^self numerator * aMultiplier / self denominator
+
+! !
+
+!Fraccion methodsFor: 'arithmetic operations - private' stamp: 'AC 9/30/2018 20:20:09'!
+multiplyToFraccion: aMultiplier
+
+	^(numerator * aMultiplier numerator) / (denominator * aMultiplier denominator)
+
 ! !
 
 !Fraccion methodsFor: 'arithmetic operations - private' stamp: 'Lucas 9/30/2018 17:06:00'!
