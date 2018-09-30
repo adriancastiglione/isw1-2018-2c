@@ -386,17 +386,21 @@ Numero subclass: #Entero
 	self invalidNumberType
 	"! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'AC 9/28/2018 09:30:09'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'Lucas 9/30/2018 16:49:53'!
 - aSubtrahend 
 	
+	^aSubtrahend subtractionToEntero: self.
+	
+	"
 	(aSubtrahend isKindOf: Entero) ifTrue: [^ self class with: value - aSubtrahend integerValue.].
-	(aSubtrahend isKindOf:Fraccion) ifTrue: [^ aSubtrahend denominator * self - aSubtrahend numerator / aSubtrahend denominator].! !
+	(aSubtrahend isKindOf:Fraccion) ifTrue: [^ aSubtrahend denominator * self - aSubtrahend numerator / aSubtrahend denominator].
+	"! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'AC 9/28/2018 09:53:11'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'Lucas 9/29/2018 20:19:15'!
 / aDivisor 
 	
-	(aDivisor isKindOf: Entero) isTrue: [^Fraccion with: self over: aDivisor].
-	(aDivisor isKindOf: Fraccion) isTrue: [].
+	(aDivisor isKindOf: Entero) ifTrue: [^Fraccion with: self over: aDivisor].
+	(aDivisor isKindOf: Fraccion) ifTrue: [].
 	
 	^self invalidNumberType.! !
 
@@ -491,6 +495,19 @@ multiplyToFraccion: aMultiplier
 	
 	^self * aMultiplier numerator / aMultiplier denominator.! !
 
+!Entero methodsFor: 'arithmetic operations - private' stamp: 'Lucas 9/30/2018 17:32:54'!
+subtractionToEntero: aMinuendo 	
+
+	^ self class with: aMinuendo integerValue - value! !
+
+!Entero methodsFor: 'arithmetic operations - private' stamp: 'Lucas 9/30/2018 17:33:56'!
+subtractionToFraccion: aMinuendo 
+	
+	^ self class with: aMinuendo numerator - (aMinuendo denominator * value ) / aMinuendo denominator
+	
+
+	! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'Entero class' category: #'Numero-Exercise'!
@@ -499,14 +516,14 @@ Entero class
 
 !Entero class methodsFor: 'instance creation' stamp: 'NR 9/23/2018 22:17:16'!
 negativeFibonacciErrorDescription
-	^ ' Fibonacci no est· definido aquÌ para enteros negativos'! !
+	^ ' Fibonacci no est√° definido aqu√≠ para enteros negativos'! !
 
-!Entero class methodsFor: 'instance creation' stamp: 'AC 9/29/2018 19:09:12'!
+!Entero class methodsFor: 'instance creation' stamp: 'Lucas 9/29/2018 20:56:33'!
 with: aValue 
 
 	| enteroClass |
 	
-	enteroClass _ self subclasses detect: [:anEnteroClass | anEnteroClass represents: aValue.] ifNone: [  self error: 'aValue debe ser anInteger valido' ].
+	enteroClass _ Entero subclasses detect: [:anEnteroClass | anEnteroClass represents: aValue.] ifNone: [  self error: 'aValue debe ser anInteger valido' ].
 	
 	^enteroClass new initalizeWith: aValue! !
 
@@ -642,9 +659,12 @@ Numero subclass: #Fraccion
 	^anAdder  addToFraccion: self.
 	! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'AC 9/28/2018 09:33:39'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'Lucas 9/30/2018 17:12:17'!
 - aSubtrahend 
 	
+	^aSubtrahend subtractionToFraccion: self.
+	
+	"
 	| newNumerator newDenominator |
 	
 	(aSubtrahend isKindOf: Fraccion) ifTrue: [
@@ -656,7 +676,7 @@ Numero subclass: #Fraccion
 	(aSubtrahend isKindOf: Entero) ifTrue: [^ self numerator - (self denominator * aSubtrahend ) / self denominator].
 	
 	^self invalidNumberType.
-	
+	"
 ! !
 
 !Fraccion methodsFor: 'arithmetic operations' stamp: 'AC 9/28/2018 09:49:34'!
@@ -750,6 +770,22 @@ addToFraccion: anAdder
 	].
 	^(self denominator * anAdder + self numerator) / self denominator.
 	"! !
+
+!Fraccion methodsFor: 'arithmetic operations - private' stamp: 'Lucas 9/30/2018 17:06:00'!
+subtractionToEntero: aMinuendo
+	
+	^ self denominator * aMinuendo - self numerator / self denominator
+! !
+
+!Fraccion methodsFor: 'arithmetic operations - private' stamp: 'Lucas 9/30/2018 17:25:03'!
+subtractionToFraccion: aMinuendo
+	
+	| newNumerator newDenominator |
+	
+	newNumerator := (aMinuendo numerator * denominator) - (aMinuendo denominator * numerator).
+	newDenominator := aMinuendo denominator * denominator.
+	^newNumerator / newDenominator
+! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
