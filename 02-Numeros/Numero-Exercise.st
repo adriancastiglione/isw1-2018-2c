@@ -396,13 +396,17 @@ Numero subclass: #Entero
 	(aSubtrahend isKindOf:Fraccion) ifTrue: [^ aSubtrahend denominator * self - aSubtrahend numerator / aSubtrahend denominator].
 	"! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'Lucas 9/29/2018 20:19:15'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'Lucas 9/30/2018 19:55:48'!
 / aDivisor 
 	
+	^aDivisor divideToEntero: self.
+	
+	"
 	(aDivisor isKindOf: Entero) ifTrue: [^Fraccion with: self over: aDivisor].
 	(aDivisor isKindOf: Fraccion) ifTrue: [].
 	
-	^self invalidNumberType.! !
+	^self invalidNumberType.
+	"! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 21:55'!
 // aDivisor 
@@ -483,6 +487,22 @@ addToEntero: anAdder
 addToFraccion: anAdder 
 
 	^self + anAdder.! !
+
+!Entero methodsFor: 'arithmetic operations - private' stamp: 'Lucas 9/30/2018 20:14:49'!
+divideToEntero: aDividend
+
+
+	^Fraccion with: aDividend over: self
+
+	! !
+
+!Entero methodsFor: 'arithmetic operations - private' stamp: 'Lucas 9/30/2018 20:20:25'!
+divideToFraccion: aDividend
+
+
+	^Fraccion with: aDividend numerator over: aDividend denominator * self value
+
+	! !
 
 !Entero methodsFor: 'arithmetic operations - private' stamp: 'AC 9/28/2018 10:43:14'!
 multiplyToEntero: aMultiplier 
@@ -679,13 +699,17 @@ Numero subclass: #Fraccion
 	"
 ! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'AC 9/28/2018 09:49:34'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'Lucas 9/30/2018 20:07:39'!
 / aDivisor 
+
+	^aDivisor divideToFraccion: self.	
 	
+	"
 	(aDivisor isKindOf:Fraccion) ifTrue: [^(numerator * aDivisor denominator) / (denominator * aDivisor numerator)].
 	(aDivisor isKindOf:Entero) ifTrue: [^Fraccion with:numerator over: denominator * aDivisor].
 	
-	^self invalidNumberType.! !
+	^self invalidNumberType.
+	"! !
 
 
 !Fraccion methodsFor: 'comparing' stamp: 'HernanWilkinson 5/7/2016 20:42'!
@@ -770,6 +794,23 @@ addToFraccion: anAdder
 	].
 	^(self denominator * anAdder + self numerator) / self denominator.
 	"! !
+
+!Fraccion methodsFor: 'arithmetic operations - private' stamp: 'Lucas 9/30/2018 20:23:50'!
+divideToEntero: aDividend
+
+	^Fraccion with: aDividend * denominator over: numerator
+
+
+	
+! !
+
+!Fraccion methodsFor: 'arithmetic operations - private' stamp: 'Lucas 9/30/2018 20:16:23'!
+divideToFraccion: aDividend
+	
+	^(aDividend numerator * denominator) / (aDividend denominator * numerator)
+
+	
+! !
 
 !Fraccion methodsFor: 'arithmetic operations - private' stamp: 'Lucas 9/30/2018 17:06:00'!
 subtractionToEntero: aMinuendo
