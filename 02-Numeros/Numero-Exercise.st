@@ -823,9 +823,9 @@ isFor: aDividend over: aDivisor
 
 	^self subclassResponsibility .! !
 
-!Fraccion class methodsFor: 'intance creation' stamp: 'AC 9/30/2018 23:15:10'!
+!Fraccion class methodsFor: 'intance creation' stamp: 'AC 9/30/2018 23:21:54'!
 with: aDividend over: aDivisor
-
+"
 	| fraccionClass |
 	
 	fraccionClass _ Fraccion subclasses detect:[:aFraccionClass | aFraccionClass isFor: aDividend over: aDivisor].
@@ -845,7 +845,7 @@ with: aDividend over: aDivisor
 	denominator isOne ifTrue: [ ^numerator ].
 
 	^self new initializeWith: numerator over: denominator
-	"! !
+! !
 
 
 !classDefinition: #NegativeDivisor category: #'Numero-Exercise'!
@@ -870,6 +870,38 @@ NegativeDivisor class
 isFor: aDividend  over: aDivisor
 
 	^aDivisor isNegative! !
+
+
+!classDefinition: #PositiveDivisorNonZeroDividend category: #'Numero-Exercise'!
+Fraccion subclass: #PositiveDivisorNonZeroDividend
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Numero-Exercise'!
+
+!PositiveDivisorNonZeroDividend methodsFor: 'initialization' stamp: 'AC 9/30/2018 23:29:31'!
+initializeWith: aDividend over: aDivisor
+
+	| greatestCommonDivisor |
+
+	greatestCommonDivisor := aDividend greatestCommonDivisorWith: aDivisor. 
+	numerator := aDividend // greatestCommonDivisor.
+	denominator := aDivisor // greatestCommonDivisor.
+	
+	denominator isOne ifTrue: [ ^numerator ].
+
+	^self. " new initializeWith: numerator over: denominator"! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'PositiveDivisorNonZeroDividend class' category: #'Numero-Exercise'!
+PositiveDivisorNonZeroDividend class
+	instanceVariableNames: ''!
+
+!PositiveDivisorNonZeroDividend class methodsFor: 'intance creation' stamp: 'AC 9/30/2018 23:20:52'!
+isFor: aDividend  over: aDivisor
+
+	^(aDivisor isNegative not) and: [aDivisor isZero not]! !
 
 
 !classDefinition: #ZeroDividend category: #'Numero-Exercise'!
