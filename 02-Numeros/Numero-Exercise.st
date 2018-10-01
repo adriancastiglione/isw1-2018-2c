@@ -823,9 +823,9 @@ isFor: aDividend over: aDivisor
 
 	^self subclassResponsibility .! !
 
-!Fraccion class methodsFor: 'intance creation' stamp: 'AC 9/30/2018 23:21:54'!
+!Fraccion class methodsFor: 'intance creation' stamp: 'AC 10/1/2018 09:53:26'!
 with: aDividend over: aDivisor
-"
+
 	| fraccionClass |
 	
 	fraccionClass _ Fraccion subclasses detect:[:aFraccionClass | aFraccionClass isFor: aDividend over: aDivisor].
@@ -845,7 +845,35 @@ with: aDividend over: aDivisor
 	denominator isOne ifTrue: [ ^numerator ].
 
 	^self new initializeWith: numerator over: denominator
+"! !
+
+
+!classDefinition: #Aparent category: #'Numero-Exercise'!
+Fraccion subclass: #Aparent
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Numero-Exercise'!
+
+!Aparent methodsFor: 'initialization' stamp: 'AC 10/1/2018 15:14:12'!
+initializeWith: aDividend over: aDivisor
+
+	| greatestCommonDivisor |
+
+	greatestCommonDivisor := aDividend greatestCommonDivisorWith: aDivisor. 
+	^aDividend // greatestCommonDivisor.
 ! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'Aparent class' category: #'Numero-Exercise'!
+Aparent class
+	instanceVariableNames: ''!
+
+!Aparent class methodsFor: 'intance creation' stamp: 'AC 10/1/2018 15:13:41'!
+isFor: aDividend  over: aDivisor
+
+	^((aDivisor isNegative not) and: [aDivisor isZero not]) and: [(aDividend greatestCommonDivisorWith: aDivisor) = aDivisor]! !
 
 
 !classDefinition: #NegativeDivisor category: #'Numero-Exercise'!
@@ -879,7 +907,7 @@ Fraccion subclass: #PositiveDivisorNonZeroDividend
 	poolDictionaries: ''
 	category: 'Numero-Exercise'!
 
-!PositiveDivisorNonZeroDividend methodsFor: 'initialization' stamp: 'AC 9/30/2018 23:29:31'!
+!PositiveDivisorNonZeroDividend methodsFor: 'initialization' stamp: 'AC 10/1/2018 15:25:21'!
 initializeWith: aDividend over: aDivisor
 
 	| greatestCommonDivisor |
@@ -888,9 +916,7 @@ initializeWith: aDividend over: aDivisor
 	numerator := aDividend // greatestCommonDivisor.
 	denominator := aDivisor // greatestCommonDivisor.
 	
-	denominator isOne ifTrue: [ ^numerator ].
-
-	^self. " new initializeWith: numerator over: denominator"! !
+	^self. ! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -898,10 +924,11 @@ initializeWith: aDividend over: aDivisor
 PositiveDivisorNonZeroDividend class
 	instanceVariableNames: ''!
 
-!PositiveDivisorNonZeroDividend class methodsFor: 'intance creation' stamp: 'AC 9/30/2018 23:20:52'!
+!PositiveDivisorNonZeroDividend class methodsFor: 'intance creation' stamp: 'AC 10/1/2018 15:24:59'!
 isFor: aDividend  over: aDivisor
 
-	^(aDivisor isNegative not) and: [aDivisor isZero not]! !
+	^((aDivisor isNegative not) and: [aDivisor isZero not]) and: [((aDividend greatestCommonDivisorWith: aDivisor) = aDivisor ) not]
+! !
 
 
 !classDefinition: #ZeroDividend category: #'Numero-Exercise'!
@@ -946,7 +973,7 @@ initializeWith: aNumerator over: aDenominator
 ZeroDivisor class
 	instanceVariableNames: ''!
 
-!ZeroDivisor class methodsFor: 'intance creation' stamp: 'AC 9/30/2018 23:08:07'!
+!ZeroDivisor class methodsFor: 'intance creation' stamp: 'AC 10/1/2018 10:04:24'!
 isFor: aDividend  over: aDivisor
 
-	^aDivisor = 0! !
+	^aDivisor isZero! !
