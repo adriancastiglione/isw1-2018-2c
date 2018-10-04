@@ -135,47 +135,71 @@ Object subclass: #Queue
 	poolDictionaries: ''
 	category: 'Queue-Exercise'!
 
-!Queue methodsFor: 'initialization' stamp: 'AC 10/2/2018 23:56:20'!
-dequeue
-
-	self isEmpty ifTrue: [^self error: self class queueEmptyErrorDescription ].
-	^contents removeFirst
-	
-	! !
-
-!Queue methodsFor: 'initialization' stamp: 'AC 10/2/2018 23:43:21'!
-enqueue: anElement
-
-	^contents add: anElement.! !
-
 !Queue methodsFor: 'initialization' stamp: 'AC 10/2/2018 23:39:10'!
 initialize
 
 	contents := OrderedCollection new.! !
 
-!Queue methodsFor: 'initialization' stamp: 'AC 10/2/2018 23:42:09'!
+
+!Queue methodsFor: 'testing' stamp: 'AC 10/2/2018 23:42:09'!
 isEmpty
 
 	^contents isEmpty! !
 
-!Queue methodsFor: 'initialization' stamp: 'Lucas 10/4/2018 11:08:36'!
+
+!Queue methodsFor: 'content manipulation' stamp: 'AC 10/4/2018 11:54:58'!
+dequeue
+
+	| queueStateClass |
+	
+	queueStateClass _ QueueState subclasses detect: [:anQueueClass | anQueueClass isFor:self.].	
+	^queueStateClass dequeueFrom: self.! !
+
+!Queue methodsFor: 'content manipulation' stamp: 'AC 10/2/2018 23:43:21'!
+enqueue: anElement
+
+	^contents add: anElement.! !
+
+
+!Queue methodsFor: 'content manipulation - private' stamp: 'AC 10/4/2018 11:41:06'!
+dequeueWhenEmpty
+
+	^self error: self class queueEmptyErrorDescription.
+! !
+
+!Queue methodsFor: 'content manipulation - private' stamp: 'AC 10/4/2018 11:48:26'!
+dequeueWhenNotEmpty
+
+	^contents removeFirst
+	
+	! !
+
+
+!Queue methodsFor: 'information' stamp: 'AC 10/4/2018 11:55:04'!
 next
 	
-	| queueClass |
+	| queueStateClass |
 	
-	queueClass _ Queue subclasses detect: [:anQueueClass | anQueueClass isFor:contents.].
-	
-	^queueClass toNext: contents 
-	
-	"
-	self isEmpty ifTrue: [^self error: self class queueEmptyErrorDescription ].
-	^contents at:1
-	"! !
+	queueStateClass _ QueueState subclasses detect: [:anQueueClass | anQueueClass isFor:self.].
+	^queueStateClass nextFrom: self.! !
 
-!Queue methodsFor: 'initialization' stamp: 'AC 10/2/2018 23:53:57'!
+!Queue methodsFor: 'information' stamp: 'AC 10/2/2018 23:53:57'!
 size
 
 	^contents size! !
+
+
+!Queue methodsFor: 'information - private' stamp: 'AC 10/4/2018 11:42:45'!
+nextWhenEmpty
+	
+	^self error: self class queueEmptyErrorDescription.
+	! !
+
+!Queue methodsFor: 'information - private' stamp: 'AC 10/4/2018 11:49:01'!
+nextWhenNotEmpty
+	
+	^contents at:1
+	! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -183,18 +207,13 @@ size
 Queue class
 	instanceVariableNames: 'contents'!
 
-!Queue class methodsFor: 'error descriptions' stamp: 'Lucas 10/4/2018 11:01:20'!
-isFor: aContents
-
-	^self subclassResponsibility! !
-
 !Queue class methodsFor: 'error descriptions'!
 queueEmptyErrorDescription
 	^ 'Queue is empty'.! !
 
 
-!classDefinition: #Empty category: #'Queue-Exercise'!
-Queue subclass: #Empty
+!classDefinition: #QueueState category: #'Queue-Exercise'!
+Object subclass: #QueueState
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
@@ -202,32 +221,29 @@ Queue subclass: #Empty
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'Empty class' category: #'Queue-Exercise'!
-Empty class
+!classDefinition: 'QueueState class' category: #'Queue-Exercise'!
+QueueState class
 	instanceVariableNames: ''!
 
-!Empty class methodsFor: 'as yet unclassified' stamp: 'Lucas 10/4/2018 11:03:09'!
-isFor: aContents
+!QueueState class methodsFor: 'testing' stamp: 'AC 10/4/2018 11:36:45'!
+isFor: aQueue
 
-	^aContents isEmpty! !
+	^self subclassResponsibility .! !
 
-!Empty class methodsFor: 'as yet unclassified' stamp: 'Lucas 10/4/2018 11:13:28'!
-queueEmptyErrorDescription
-	^ 'Queue is empty'.! !
 
-!Empty class methodsFor: 'as yet unclassified' stamp: 'Lucas 10/4/2018 11:14:08'!
-toNext: aContents
-	
-	^self error: self queueEmptyErrorDescription
-	
-	"
-	self isEmpty ifTrue: [^self error: self class queueEmptyErrorDescription ].
-	^contents at:1
-	"! !
+!QueueState class methodsFor: 'queue state manipulation' stamp: 'AC 10/4/2018 11:38:45'!
+dequeueFrom: aQueue
+
+	^self subclassResponsibility .! !
+
+!QueueState class methodsFor: 'queue state manipulation' stamp: 'AC 10/4/2018 11:39:03'!
+nextFrom: aQueue
+
+	^self subclassResponsibility .! !
 
 
-!classDefinition: #NotEmpty category: #'Queue-Exercise'!
-Queue subclass: #NotEmpty
+!classDefinition: #EmptyQueue category: #'Queue-Exercise'!
+QueueState subclass: #EmptyQueue
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
@@ -235,21 +251,52 @@ Queue subclass: #NotEmpty
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'NotEmpty class' category: #'Queue-Exercise'!
-NotEmpty class
+!classDefinition: 'EmptyQueue class' category: #'Queue-Exercise'!
+EmptyQueue class
 	instanceVariableNames: ''!
 
-!NotEmpty class methodsFor: 'as yet unclassified' stamp: 'Lucas 10/4/2018 11:03:33'!
-isFor: aContents
+!EmptyQueue class methodsFor: 'testing' stamp: 'AC 10/4/2018 11:39:57'!
+isFor: aQueue
 
-	^aContents isEmpty not! !
+	^aQueue isEmpty.! !
 
-!NotEmpty class methodsFor: 'as yet unclassified' stamp: 'Lucas 10/4/2018 11:06:36'!
-toNext: aContents
-	
-	^aContents at:1
-	
-	"
-	self isEmpty ifTrue: [^self error: self class queueEmptyErrorDescription ].
-	^contents at:1
-	"! !
+
+!EmptyQueue class methodsFor: 'queue state manipulation' stamp: 'AC 10/4/2018 11:40:35'!
+dequeueFrom: aQueue
+
+	^aQueue dequeueWhenEmpty.! !
+
+!EmptyQueue class methodsFor: 'queue state manipulation' stamp: 'AC 10/4/2018 11:42:07'!
+nextFrom: aQueue
+
+	^aQueue nextWhenEmpty.! !
+
+
+!classDefinition: #NotEmptyQueue category: #'Queue-Exercise'!
+QueueState subclass: #NotEmptyQueue
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Queue-Exercise'!
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'NotEmptyQueue class' category: #'Queue-Exercise'!
+NotEmptyQueue class
+	instanceVariableNames: ''!
+
+!NotEmptyQueue class methodsFor: 'testing' stamp: 'AC 10/4/2018 11:46:45'!
+isFor: aQueue
+
+	^aQueue isEmpty not.! !
+
+
+!NotEmptyQueue class methodsFor: 'queue state manipulation' stamp: 'AC 10/4/2018 11:47:43'!
+dequeueFrom: aQueue
+
+	^aQueue dequeueWhenNotEmpty.! !
+
+!NotEmptyQueue class methodsFor: 'queue state manipulation' stamp: 'AC 10/4/2018 11:47:26'!
+nextFrom: aQueue
+
+	^aQueue nextWhenNotEmpty.! !
