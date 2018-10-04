@@ -158,11 +158,19 @@ isEmpty
 
 	^contents isEmpty! !
 
-!Queue methodsFor: 'initialization' stamp: 'AC 10/2/2018 23:59:17'!
+!Queue methodsFor: 'initialization' stamp: 'Lucas 10/4/2018 11:08:36'!
 next
 	
+	| queueClass |
+	
+	queueClass _ Queue subclasses detect: [:anQueueClass | anQueueClass isFor:contents.].
+	
+	^queueClass toNext: contents 
+	
+	"
 	self isEmpty ifTrue: [^self error: self class queueEmptyErrorDescription ].
-	^contents at:1! !
+	^contents at:1
+	"! !
 
 !Queue methodsFor: 'initialization' stamp: 'AC 10/2/2018 23:53:57'!
 size
@@ -175,6 +183,73 @@ size
 Queue class
 	instanceVariableNames: 'contents'!
 
+!Queue class methodsFor: 'error descriptions' stamp: 'Lucas 10/4/2018 11:01:20'!
+isFor: aContents
+
+	^self subclassResponsibility! !
+
 !Queue class methodsFor: 'error descriptions'!
 queueEmptyErrorDescription
 	^ 'Queue is empty'.! !
+
+
+!classDefinition: #Empty category: #'Queue-Exercise'!
+Queue subclass: #Empty
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Queue-Exercise'!
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'Empty class' category: #'Queue-Exercise'!
+Empty class
+	instanceVariableNames: ''!
+
+!Empty class methodsFor: 'as yet unclassified' stamp: 'Lucas 10/4/2018 11:03:09'!
+isFor: aContents
+
+	^aContents isEmpty! !
+
+!Empty class methodsFor: 'as yet unclassified' stamp: 'Lucas 10/4/2018 11:13:28'!
+queueEmptyErrorDescription
+	^ 'Queue is empty'.! !
+
+!Empty class methodsFor: 'as yet unclassified' stamp: 'Lucas 10/4/2018 11:14:08'!
+toNext: aContents
+	
+	^self error: self queueEmptyErrorDescription
+	
+	"
+	self isEmpty ifTrue: [^self error: self class queueEmptyErrorDescription ].
+	^contents at:1
+	"! !
+
+
+!classDefinition: #NotEmpty category: #'Queue-Exercise'!
+Queue subclass: #NotEmpty
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Queue-Exercise'!
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'NotEmpty class' category: #'Queue-Exercise'!
+NotEmpty class
+	instanceVariableNames: ''!
+
+!NotEmpty class methodsFor: 'as yet unclassified' stamp: 'Lucas 10/4/2018 11:03:33'!
+isFor: aContents
+
+	^aContents isEmpty not! !
+
+!NotEmpty class methodsFor: 'as yet unclassified' stamp: 'Lucas 10/4/2018 11:06:36'!
+toNext: aContents
+	
+	^aContents at:1
+	
+	"
+	self isEmpty ifTrue: [^self error: self class queueEmptyErrorDescription ].
+	^contents at:1
+	"! !
