@@ -271,10 +271,11 @@ transactions
 	^ transactions copy! !
 
 
-!ReceptiveAccount methodsFor: 'balance' stamp: 'AC 10/14/2018 19:52:47'!
+!ReceptiveAccount methodsFor: 'balance' stamp: 'Lucas 10/16/2018 00:51:22'!
 balance
 
-	^self transactions sum:[:aTransaction | aTransaction valueInBalance] ifEmpty: [^0].! !
+	transactions isEmpty ifTrue: [^0].
+	^self transactions sum:[:aTransaction | aTransaction valueInBalance]! !
 
 
 !ReceptiveAccount methodsFor: 'testing' stamp: 'HAW 10/11/2018 16:53:28'!
