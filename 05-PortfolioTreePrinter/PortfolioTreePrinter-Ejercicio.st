@@ -635,16 +635,10 @@ hasRegistered: aTtransaction
 
 !classDefinition: #SummarizingAccountVisitor category: #'PortfolioTreePrinter-Ejercicio'!
 Object subclass: #SummarizingAccountVisitor
-	instanceVariableNames: 'summarizingAccount accountNames treeLines amountSpaces'
+	instanceVariableNames: 'summarizingAccount accountNamesDiccionary treeLines currentDepth'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'PortfolioTreePrinter-Ejercicio'!
-
-!SummarizingAccountVisitor methodsFor: 'initialization' stamp: 'Lucas 10/22/2018 20:34:19'!
-inicializeOf: aComposedPortfolio with: anAccountNames
-
-	summarizingAccount := aComposedPortfolio.
-	accountNames := anAccountNames.! !
 
 
 !SummarizingAccountVisitor methodsFor: 'operations' stamp: 'AC 10/24/2018 20:53:45'!
@@ -657,6 +651,12 @@ visitReceptiveAccount: aReceptiveAccount
 ! !
 
 
+!SummarizingAccountVisitor methodsFor: 'value' stamp: 'Lucas 10/25/2018 11:54:55'!
+inicializeOf: aComposedPortfolio with: anAccountNames
+
+	summarizingAccount := aComposedPortfolio.
+	accountNamesDiccionary := anAccountNames.! !
+
 !SummarizingAccountVisitor methodsFor: 'value' stamp: 'AC 10/24/2018 20:53:36'!
 value
 	
@@ -668,10 +668,10 @@ value
 SummarizingAccountVisitor class
 	instanceVariableNames: ''!
 
-!SummarizingAccountVisitor class methodsFor: 'initialization' stamp: 'Lucas 10/22/2018 20:33:06'!
-of: aComposedPortfolio with: accountNames
+!SummarizingAccountVisitor class methodsFor: 'initialization' stamp: 'Lucas 10/25/2018 11:55:35'!
+of: aComposedPortfolio with: anAccountNamesDiccionary
 
-	^self new inicializeOf: aComposedPortfolio with: accountNames.! !
+	^self new inicializeOf: aComposedPortfolio with: anAccountNamesDiccionary.! !
 
 
 !classDefinition: #SummarizingAccountReverseTreePrinter category: #'PortfolioTreePrinter-Ejercicio'!
@@ -681,10 +681,10 @@ SummarizingAccountVisitor subclass: #SummarizingAccountReverseTreePrinter
 	poolDictionaries: ''
 	category: 'PortfolioTreePrinter-Ejercicio'!
 
-!SummarizingAccountReverseTreePrinter methodsFor: 'initialization' stamp: 'AC 10/24/2018 20:59:46'!
-inicializeOf: aComposedPortfolio with: anAccountNames
+!SummarizingAccountReverseTreePrinter methodsFor: 'initialization' stamp: 'Lucas 10/25/2018 11:58:21'!
+inicializeOf: aComposedPortfolio with: anAccountNamesDiccionary
 
-	treePrinter := SummarizingAccountTreePrinter of: aComposedPortfolio with: anAccountNames ! !
+	treePrinter := SummarizingAccountTreePrinter of: aComposedPortfolio with: anAccountNamesDiccionary ! !
 
 
 !SummarizingAccountReverseTreePrinter methodsFor: 'operations' stamp: 'AC 10/24/2018 21:00:04'!
@@ -714,10 +714,10 @@ value
 SummarizingAccountReverseTreePrinter class
 	instanceVariableNames: ''!
 
-!SummarizingAccountReverseTreePrinter class methodsFor: 'as yet unclassified' stamp: 'AC 10/24/2018 20:56:08'!
-of: aComposedPortfolio with: accountNames
+!SummarizingAccountReverseTreePrinter class methodsFor: 'as yet unclassified' stamp: 'Lucas 10/25/2018 11:55:58'!
+of: aComposedPortfolio with: anAccountNamesDiccionary
 
-	^self new inicializeOf: aComposedPortfolio with: accountNames.! !
+	^self new inicializeOf: aComposedPortfolio with: anAccountNamesDiccionary.! !
 
 
 !classDefinition: #SummarizingAccountTreePrinter category: #'PortfolioTreePrinter-Ejercicio'!
@@ -727,30 +727,30 @@ SummarizingAccountVisitor subclass: #SummarizingAccountTreePrinter
 	poolDictionaries: ''
 	category: 'PortfolioTreePrinter-Ejercicio'!
 
-!SummarizingAccountTreePrinter methodsFor: 'initialization' stamp: 'AC 10/24/2018 20:53:12'!
-inicializeOf: aComposedPortfolio with: anAccountNames
+!SummarizingAccountTreePrinter methodsFor: 'initialization' stamp: 'Lucas 10/25/2018 11:58:40'!
+inicializeOf: aComposedPortfolio with: anAccountNamesDiccionary
 
 	summarizingAccount := aComposedPortfolio.
-	accountNames := anAccountNames.! !
+	accountNamesDiccionary := anAccountNamesDiccionary.! !
 
 
-!SummarizingAccountTreePrinter methodsFor: 'operations' stamp: 'AC 10/24/2018 20:53:12'!
+!SummarizingAccountTreePrinter methodsFor: 'operations' stamp: 'Lucas 10/25/2018 11:56:21'!
 visitPortfolio: aPortfolio
 
-	treeLines add: (((String new:amountSpaces) atAllPut:$ ),(accountNames at: aPortfolio)).
-	amountSpaces := amountSpaces + 1.
+	treeLines add: (((String new:currentDepth) atAllPut:$ ),(accountNamesDiccionary at: aPortfolio)).
+	currentDepth := currentDepth + 1.
 	aPortfolio acceptInAllSubAccounts: self .
-	amountSpaces := amountSpaces - 1.! !
+	currentDepth := currentDepth - 1.! !
 
-!SummarizingAccountTreePrinter methodsFor: 'operations' stamp: 'AC 10/24/2018 20:53:12'!
+!SummarizingAccountTreePrinter methodsFor: 'operations' stamp: 'Lucas 10/25/2018 11:56:27'!
 visitReceptiveAccount: aReceptiveAccount
 
-	treeLines add: (((String new:amountSpaces) atAllPut:$ ),(accountNames at: aReceptiveAccount)).! !
+	treeLines add: (((String new:currentDepth) atAllPut:$ ),(accountNamesDiccionary at: aReceptiveAccount)).! !
 
 
-!SummarizingAccountTreePrinter methodsFor: 'value' stamp: 'AC 10/24/2018 20:53:12'!
+!SummarizingAccountTreePrinter methodsFor: 'value' stamp: 'Lucas 10/25/2018 11:50:14'!
 value
-	amountSpaces := 0.
+	currentDepth := 0.
 	treeLines := OrderedCollection new.
 	summarizingAccount accept: self.
 
@@ -762,10 +762,10 @@ value
 SummarizingAccountTreePrinter class
 	instanceVariableNames: ''!
 
-!SummarizingAccountTreePrinter class methodsFor: 'as yet unclassified' stamp: 'AC 10/24/2018 20:53:12'!
-of: aComposedPortfolio with: accountNames
+!SummarizingAccountTreePrinter class methodsFor: 'as yet unclassified' stamp: 'Lucas 10/25/2018 11:55:48'!
+of: aComposedPortfolio with: anAccountNamesDiccionary
 
-	^self new inicializeOf: aComposedPortfolio with: accountNames.! !
+	^self new inicializeOf: aComposedPortfolio with: anAccountNamesDiccionary.! !
 
 
 !classDefinition: #Transfer category: #'PortfolioTreePrinter-Ejercicio'!
