@@ -1096,18 +1096,18 @@ addOAt: aPosition
 
 	terniLapilli notOTurnError.! !
 
-!PlacingX methodsFor: 'operations' stamp: 'AC 11/8/2018 11:15:05'!
-addXAt: aPoint
+!PlacingX methodsFor: 'operations' stamp: 'Lucas 11/8/2018 14:18:34'!
+addXAt: aPosition
 
-	terniLapilli addX: aPoint.! !
+	terniLapilli addX: aPosition.! !
 
-!PlacingX methodsFor: 'operations' stamp: 'AC 11/8/2018 11:15:05'!
-moveOFrom: aPoint to: aPoint2
+!PlacingX methodsFor: 'operations' stamp: 'Lucas 11/8/2018 14:18:45'!
+moveOFrom: aPosition to: aPosition2
 
 	terniLapilli cantMoveTillAllTokensArePositionedError! !
 
-!PlacingX methodsFor: 'operations' stamp: 'AC 11/8/2018 11:15:05'!
-moveXFrom: aPoint to: aPoint2
+!PlacingX methodsFor: 'operations' stamp: 'Lucas 11/8/2018 14:18:51'!
+moveXFrom: aPosition to: aPosition2
 
 	terniLapilli cantMoveTillAllTokensArePositionedError! !
 
@@ -1156,29 +1156,29 @@ TerniLapilliState subclass: #SlidingO
 	poolDictionaries: ''
 	category: 'Terni-Lapilli'!
 
-!SlidingO methodsFor: 'initialization' stamp: 'AC 11/8/2018 11:15:05'!
-inicializeWith: aTablero
+!SlidingO methodsFor: 'initialization' stamp: 'Lucas 11/8/2018 14:20:03'!
+inicializeWith: aTerniLapilli
 
-	terniLapilli := aTablero.! !
+	terniLapilli := aTerniLapilli.! !
 
 
-!SlidingO methodsFor: 'operations' stamp: 'AC 11/8/2018 11:15:05'!
-addOAt: aPoint
-
-	terniLapilli cantAddedWhenAllTokensArePositionedError! !
-
-!SlidingO methodsFor: 'operations' stamp: 'AC 11/8/2018 11:15:05'!
-addXAt: aPoint
+!SlidingO methodsFor: 'operations' stamp: 'Lucas 11/8/2018 14:18:58'!
+addOAt: aPosition
 
 	terniLapilli cantAddedWhenAllTokensArePositionedError! !
 
-!SlidingO methodsFor: 'operations' stamp: 'AC 11/8/2018 11:15:05'!
-moveOFrom: aPoint to: aPoint2
+!SlidingO methodsFor: 'operations' stamp: 'Lucas 11/8/2018 14:19:01'!
+addXAt: aPosition
 
-	terniLapilli slideOFrom: aPoint to: aPoint2! !
+	terniLapilli cantAddedWhenAllTokensArePositionedError! !
 
-!SlidingO methodsFor: 'operations' stamp: 'AC 11/8/2018 11:15:05'!
-moveXFrom: aPoint to: aPoint2
+!SlidingO methodsFor: 'operations' stamp: 'Lucas 11/8/2018 14:19:13'!
+moveOFrom: aPosition to: aPosition2
+
+	terniLapilli slideOFrom: aPosition to: aPosition2! !
+
+!SlidingO methodsFor: 'operations' stamp: 'Lucas 11/8/2018 14:19:18'!
+moveXFrom: aPosition to: aPosition2
 
 	terniLapilli notXTurnError! !
 
@@ -1222,31 +1222,31 @@ TerniLapilliState subclass: #SlidingX
 	poolDictionaries: ''
 	category: 'Terni-Lapilli'!
 
-!SlidingX methodsFor: 'initialization' stamp: 'AC 11/8/2018 11:15:05'!
-inicializeWith: aTablero
+!SlidingX methodsFor: 'initialization' stamp: 'Lucas 11/8/2018 14:20:09'!
+inicializeWith: aTerniLapilli
 
-	terniLapilli := aTablero.! !
+	terniLapilli := aTerniLapilli.! !
 
 
-!SlidingX methodsFor: 'operations' stamp: 'AC 11/8/2018 11:15:05'!
-addOAt: aPoint
-
-	terniLapilli cantAddedWhenAllTokensArePositionedError! !
-
-!SlidingX methodsFor: 'operations' stamp: 'AC 11/8/2018 11:15:05'!
-addXAt: aPoint
+!SlidingX methodsFor: 'operations' stamp: 'Lucas 11/8/2018 14:19:27'!
+addOAt: aPosition
 
 	terniLapilli cantAddedWhenAllTokensArePositionedError! !
 
-!SlidingX methodsFor: 'operations' stamp: 'AC 11/8/2018 11:15:05'!
-moveOFrom: aPoint to: aPoint2
+!SlidingX methodsFor: 'operations' stamp: 'Lucas 11/8/2018 14:19:29'!
+addXAt: aPosition
+
+	terniLapilli cantAddedWhenAllTokensArePositionedError! !
+
+!SlidingX methodsFor: 'operations' stamp: 'Lucas 11/8/2018 14:19:37'!
+moveOFrom: aPosition to: aPosition2
 
 	terniLapilli notOTurnError! !
 
-!SlidingX methodsFor: 'operations' stamp: 'AC 11/8/2018 11:15:05'!
-moveXFrom: aPoint to: aPoint2
+!SlidingX methodsFor: 'operations' stamp: 'Lucas 11/8/2018 14:19:44'!
+moveXFrom: aPosition to: aPosition2
 
-	terniLapilli slideXFrom: aPoint to: aPoint2! !
+	terniLapilli slideXFrom: aPosition to: aPosition2! !
 
 !SlidingX methodsFor: 'operations' stamp: 'AC 11/8/2018 12:07:03'!
 transitionate
@@ -1288,29 +1288,29 @@ TerniLapilliState subclass: #WinnerO
 	poolDictionaries: ''
 	category: 'Terni-Lapilli'!
 
-!WinnerO methodsFor: 'initialization' stamp: 'AC 11/8/2018 11:15:05'!
-inicializeWith: aTablero
+!WinnerO methodsFor: 'initialization' stamp: 'Lucas 11/8/2018 14:20:14'!
+inicializeWith: aTerniLapilli
 
-	terniLapilli := aTablero.! !
+	terniLapilli := aTerniLapilli.! !
 
 
-!WinnerO methodsFor: 'operations' stamp: 'AC 11/8/2018 11:15:05'!
-addOAt: aPoint
-
-	terniLapilli gameIsOverError! !
-
-!WinnerO methodsFor: 'operations' stamp: 'AC 11/8/2018 11:15:05'!
-addXAt: aPoint
+!WinnerO methodsFor: 'operations' stamp: 'Lucas 11/8/2018 14:20:34'!
+addOAt: aPosition
 
 	terniLapilli gameIsOverError! !
 
-!WinnerO methodsFor: 'operations' stamp: 'AC 11/8/2018 11:15:05'!
-moveOFrom: aPoint to: aPoint2
+!WinnerO methodsFor: 'operations' stamp: 'Lucas 11/8/2018 14:20:38'!
+addXAt: aPosition
 
 	terniLapilli gameIsOverError! !
 
-!WinnerO methodsFor: 'operations' stamp: 'AC 11/8/2018 11:15:05'!
-moveXFrom: aPoint to: aPoint2
+!WinnerO methodsFor: 'operations' stamp: 'Lucas 11/8/2018 14:20:42'!
+moveOFrom: aPosition to: aPosition2
+
+	terniLapilli gameIsOverError! !
+
+!WinnerO methodsFor: 'operations' stamp: 'Lucas 11/8/2018 14:20:47'!
+moveXFrom: aPosition to: aPosition2
 
 	terniLapilli gameIsOverError! !
 
@@ -1353,29 +1353,29 @@ TerniLapilliState subclass: #WinnerX
 	poolDictionaries: ''
 	category: 'Terni-Lapilli'!
 
-!WinnerX methodsFor: 'initialization' stamp: 'AC 11/8/2018 11:15:05'!
-inicializeWith: aTablero
+!WinnerX methodsFor: 'initialization' stamp: 'Lucas 11/8/2018 14:20:19'!
+inicializeWith: aTerniLapilli
 
-	terniLapilli := aTablero.! !
+	terniLapilli := aTerniLapilli.! !
 
 
-!WinnerX methodsFor: 'operations' stamp: 'AC 11/8/2018 11:15:05'!
-addOAt: aPoint
-
-	self error: terniLapilli class gameIsOverErrorMessage! !
-
-!WinnerX methodsFor: 'operations' stamp: 'AC 11/8/2018 11:15:05'!
-addXAt: aPoint
+!WinnerX methodsFor: 'operations' stamp: 'Lucas 11/8/2018 14:20:54'!
+addOAt: aPosition
 
 	self error: terniLapilli class gameIsOverErrorMessage! !
 
-!WinnerX methodsFor: 'operations' stamp: 'AC 11/8/2018 11:15:05'!
-moveOFrom: aPoint to: aPoint2
+!WinnerX methodsFor: 'operations' stamp: 'Lucas 11/8/2018 14:20:57'!
+addXAt: aPosition
 
 	self error: terniLapilli class gameIsOverErrorMessage! !
 
-!WinnerX methodsFor: 'operations' stamp: 'AC 11/8/2018 11:15:05'!
-moveXFrom: aPoint to: aPoint2
+!WinnerX methodsFor: 'operations' stamp: 'Lucas 11/8/2018 14:21:01'!
+moveOFrom: aPosition to: aPosition2
+
+	self error: terniLapilli class gameIsOverErrorMessage! !
+
+!WinnerX methodsFor: 'operations' stamp: 'Lucas 11/8/2018 14:21:07'!
+moveXFrom: aPosition to: aPosition2
 
 	self error: terniLapilli class gameIsOverErrorMessage! !
 
