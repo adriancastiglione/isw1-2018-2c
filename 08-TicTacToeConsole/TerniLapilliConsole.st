@@ -214,7 +214,7 @@ test08ConsoleDisplaysOWinnnigBySliding
 	self assert: 'Estado: Juego terminado - ¡Ganó O!!' equals: lines next.
 	self assert: lines atEnd.! !
 
-!TerniLapilliConsoleTest methodsFor: 'testing' stamp: 'Lucas 11/11/2018 22:21:08'!
+!TerniLapilliConsoleTest methodsFor: 'testing' stamp: 'AC 11/12/2018 01:27:22'!
 test09ViewIsEmptyWhenCreated
 
 	| view lines |
@@ -223,17 +223,18 @@ test09ViewIsEmptyWhenCreated
 	
 	lines _ view lines.
 	
-	self assert: ' | | ' equals: lines next.
-	self assert: '-----' equals: lines next.
-	self assert: ' | | ' equals: lines next.
-	self assert: '-----' equals: lines next.
-	self assert: ' | | ' equals: lines next.
-	self assert: 'Playing X' equals: lines next.
+	self assert: ' | | ' equals: lines nextLine.
+	self assert: '-----' equals: lines nextLine.
+	self assert: ' | | ' equals: lines nextLine.
+	self assert: '-----' equals: lines nextLine.
+	self assert: ' | | ' equals: lines nextLine.
+	self assert: ' ' equals: lines nextLine.
+	self assert: lines atEnd.
 	
 	
 	! !
 
-!TerniLapilliConsoleTest methodsFor: 'testing' stamp: 'Lucas 11/11/2018 21:40:22'!
+!TerniLapilliConsoleTest methodsFor: 'testing' stamp: 'AC 11/12/2018 01:28:11'!
 test10ViewDisplaysXPlacingWithCorrectState
 
 	| view lines |
@@ -244,16 +245,17 @@ test10ViewDisplaysXPlacingWithCorrectState
 
 	lines _ view lines.
 	
-	self assert: ' | | ' equals: lines next.
-	self assert: '-----' equals: lines next.
-	self assert: ' |X| ' equals: lines next.
-	self assert: '-----' equals: lines next.
-	self assert: ' | | ' equals: lines next.
-	self assert: 'Playing O' equals: lines next.
+	self assert: ' | | ' equals: lines nextLine.
+	self assert: '-----' equals: lines nextLine.
+	self assert: ' |X| ' equals: lines nextLine.
+	self assert: '-----' equals: lines nextLine.
+	self assert: ' | | ' equals: lines nextLine.
+	self assert: 'Playing O' equals: lines nextLine.
+	self assert: lines atEnd.
 	
 	! !
 
-!TerniLapilliConsoleTest methodsFor: 'testing' stamp: 'Lucas 11/11/2018 21:33:59'!
+!TerniLapilliConsoleTest methodsFor: 'testing' stamp: 'AC 11/12/2018 02:04:03'!
 test11ViewDisplaysOPlacingWithCorrectState
 
 	| view lines |
@@ -265,16 +267,16 @@ test11ViewDisplaysOPlacingWithCorrectState
 
 	lines _ view lines.
 	
-	self assert: ' | | ' equals: lines next.
-	self assert: '-----' equals: lines next.
-	self assert: ' |X| ' equals: lines next.
-	self assert: '-----' equals: lines next.
-	self assert: 'O| | ' equals: lines next.
-	self assert: 'Playing X' equals: lines next.
+	self assert: ' | | ' equals: lines nextLine.
+	self assert: '-----' equals: lines nextLine.
+	self assert: ' |X| ' equals: lines nextLine.
+	self assert: '-----' equals: lines nextLine.
+	self assert: 'O| | ' equals: lines nextLine.
+	self assert: 'Playing X' equals: lines nextLine.
 	
 	! !
 
-!TerniLapilliConsoleTest methodsFor: 'testing' stamp: 'Lucas 11/11/2018 21:34:02'!
+!TerniLapilliConsoleTest methodsFor: 'testing' stamp: 'AC 11/12/2018 02:06:19'!
 test12ViewDisplaysXWinningByPlacing
 
 	| view lines |
@@ -289,16 +291,16 @@ test12ViewDisplaysXWinningByPlacing
 
 	lines _ view lines.
 	
-	self assert: 'X| | ' equals: lines next.
-	self assert: '-----' equals: lines next.
-	self assert: 'O|X| ' equals: lines next.
-	self assert: '-----' equals: lines next.
-	self assert: 'O| |X' equals: lines next.
-	self assert: 'X Won!!' equals: lines next.
+	self assert: 'X| | ' equals: lines nextLine.
+	self assert: '-----' equals: lines nextLine.
+	self assert: 'O|X| ' equals: lines nextLine.
+	self assert: '-----' equals: lines nextLine.
+	self assert: 'O| |X' equals: lines nextLine.
+	self assert: 'X Won!!' equals: lines nextLine.
 	
 	! !
 
-!TerniLapilliConsoleTest methodsFor: 'testing' stamp: 'Lucas 11/11/2018 21:34:06'!
+!TerniLapilliConsoleTest methodsFor: 'testing' stamp: 'AC 11/12/2018 02:06:38'!
 test13ViewDisplaysOWinningByPlacing
 
 	| view lines |
@@ -314,16 +316,16 @@ test13ViewDisplaysOWinningByPlacing
 
 	lines _ view lines.
 	
-	self assert: 'X| |X' equals: lines next.
-	self assert: '-----' equals: lines next.
-	self assert: ' |X| ' equals: lines next.
-	self assert: '-----' equals: lines next.
-	self assert: 'O|O|O' equals: lines next.
-	self assert: 'O Won!!' equals: lines next.
+	self assert: 'X| |X' equals: lines nextLine.
+	self assert: '-----' equals: lines nextLine.
+	self assert: ' |X| ' equals: lines nextLine.
+	self assert: '-----' equals: lines nextLine.
+	self assert: 'O|O|O' equals: lines nextLine.
+	self assert: 'O Won!!' equals: lines nextLine.
 	
 	! !
 
-!TerniLapilliConsoleTest methodsFor: 'testing' stamp: 'Lucas 11/11/2018 22:06:42'!
+!TerniLapilliConsoleTest methodsFor: 'testing' stamp: 'AC 11/12/2018 02:06:55'!
 test14ViewDisplaysSlidingsFromBothPlayers
 
 	| view lines |
@@ -342,16 +344,16 @@ test14ViewDisplaysSlidingsFromBothPlayers
 
 	lines _ view lines.
 	
-	self assert: ' |O|X' equals: lines next.
-	self assert: '-----' equals: lines next.
-	self assert: 'X| |O' equals: lines next.
-	self assert: '-----' equals: lines next.
-	self assert: 'O|X| ' equals: lines next.
-	self assert: 'Playing O' equals: lines next.
+	self assert: ' |O|X' equals: lines nextLine.
+	self assert: '-----' equals: lines nextLine.
+	self assert: 'X| |O' equals: lines nextLine.
+	self assert: '-----' equals: lines nextLine.
+	self assert: 'O|X| ' equals: lines nextLine.
+	self assert: 'Playing O' equals: lines nextLine.
 	
 	! !
 
-!TerniLapilliConsoleTest methodsFor: 'testing' stamp: 'Lucas 11/11/2018 21:34:13'!
+!TerniLapilliConsoleTest methodsFor: 'testing' stamp: 'AC 11/12/2018 02:09:32'!
 test15ViewDisplaysXWinningBySliding
 
 	| view lines |
@@ -368,16 +370,16 @@ test15ViewDisplaysXWinningBySliding
 
 	lines _ view lines.
 	
-	self assert: 'X| | ' equals: lines next.
-	self assert: '-----' equals: lines next.
-	self assert: 'O|X| ' equals: lines next.
-	self assert: '-----' equals: lines next.
-	self assert: 'O|O|X' equals: lines next.
-	self assert: 'X Won!!' equals: lines next.
+	self assert: 'X| | ' equals: lines nextLine.
+	self assert: '-----' equals: lines nextLine.
+	self assert: 'O|X| ' equals: lines nextLine.
+	self assert: '-----' equals: lines nextLine.
+	self assert: 'O|O|X' equals: lines nextLine.
+	self assert: 'X Won!!' equals: lines nextLine.
 	
 	! !
 
-!TerniLapilliConsoleTest methodsFor: 'testing' stamp: 'Lucas 11/11/2018 21:34:16'!
+!TerniLapilliConsoleTest methodsFor: 'testing' stamp: 'AC 11/12/2018 02:09:50'!
 test16ViewDisplaysOWinnnigBySliding
 
 	| view lines |
@@ -395,12 +397,12 @@ test16ViewDisplaysOWinnnigBySliding
 
 	lines _ view lines.
 	
-	self assert: ' | |X' equals: lines next.
-	self assert: '-----' equals: lines next.
-	self assert: 'X|X| ' equals: lines next.
-	self assert: '-----' equals: lines next.
-	self assert: 'O|O|O' equals: lines next.
-	self assert: 'O Won!!' equals: lines next.
+	self assert: ' | |X' equals: lines nextLine.
+	self assert: '-----' equals: lines nextLine.
+	self assert: 'X|X| ' equals: lines nextLine.
+	self assert: '-----' equals: lines nextLine.
+	self assert: 'O|O|O' equals: lines nextLine.
+	self assert: 'O Won!!' equals: lines nextLine.
 	
 	! !
 
@@ -2686,28 +2688,11 @@ lines
 
 	^ReadStream on: lines from: 1 to: (lines size)! !
 
-!TerniLapilliConsole methodsFor: 'operations' stamp: 'Lucas 11/11/2018 19:05:21'!
+!TerniLapilliConsole methodsFor: 'operations' stamp: 'AC 11/12/2018 00:33:12'!
 update: aTerniLapilliState
 
 	terniLapilli lastPlay accept: self.
-	aTerniLapilliState accept: self
-
-"
-	| lastPlay |
-	lastPlay _ terniLapilli lastPlay.
-	
-	lastPlay wasMadeByX ifTrue:[
-		(lastPlay isAMarking ) ifTrue: [lines add: 'X marcó en ', (lastPlay markedPosition printString)].
-		(lastPlay isASliding) ifTrue: [lines add: 'X deslizó hasta ', (lastPlay toPosition printString), ' desde ', (lastPlay fromPosition printString)].
-	]
-	ifFalse:[
-		(lastPlay isAMarking ) ifTrue: [lines add: 'O marcó en ', (lastPlay markedPosition printString)].
-		(lastPlay isASliding) ifTrue: [lines add: 'O deslizó hasta ', (lastPlay toPosition printString), ' desde ', (lastPlay fromPosition printString)].
-	].
-	
-	aTerniLapilliState accept: self
-	
-"! !
+	aTerniLapilliState accept: self! !
 
 
 !TerniLapilliConsole methodsFor: 'visiting TerniLapilli Plays' stamp: 'AC 11/11/2018 01:22:46'!
@@ -2733,169 +2718,102 @@ visitSlidingPlayX: aTerniLapilliPlay
 
 !classDefinition: #TerniLapilliView category: #TerniLapilliConsole!
 TerniLapilliStateObserver subclass: #TerniLapilliView
-	instanceVariableNames: 'terniLapilli lines'
+	instanceVariableNames: 'terniLapilli lines gameState'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'TerniLapilliConsole'!
 
-!TerniLapilliView methodsFor: 'initialization' stamp: 'Lucas 11/11/2018 22:58:24'!
+!TerniLapilliView methodsFor: 'initialization' stamp: 'AC 11/12/2018 02:01:57'!
 initializeOn: aTerniLapilli
 	
 	terniLapilli := aTerniLapilli.
 	aTerniLapilli addStateObserver: self.
-	lines := OrderedCollection new.
-	lines add: ' | | '.
-	lines add: ' | | '.
-	lines add: ' | | '.
-	lines add: 'Playing X'.
-	
-	lines removeFirst.
-	lines removeFirst.
-	lines removeFirst.
-	lines removeFirst.
-	
-	lines add: ' | | '.
-	lines add: ' | | '.
-	lines add: ' | | '.
-	lines add: 'Playing X'.
-	! !
+	lines := OrderedCollection with: ' | | ' with: ' | | ' with: ' | | '.
+	gameState := ' '.! !
 
 
-!TerniLapilliView methodsFor: 'visiting TerniLapilli states' stamp: 'Lucas 11/11/2018 22:00:21'!
+!TerniLapilliView methodsFor: 'visiting TerniLapilli states' stamp: 'AC 11/12/2018 01:31:09'!
 visitPlayingO
 
-	lines at: 4 put: 'Playing O'; yourself.! !
+	gameState := 'Playing O'.! !
 
-!TerniLapilliView methodsFor: 'visiting TerniLapilli states' stamp: 'Lucas 11/11/2018 22:00:25'!
+!TerniLapilliView methodsFor: 'visiting TerniLapilli states' stamp: 'AC 11/12/2018 01:31:24'!
 visitPlayingX
 
-	lines at: 4 put: 'Playing X'; yourself.! !
+	gameState := 'Playing X'.! !
 
-!TerniLapilliView methodsFor: 'visiting TerniLapilli states' stamp: 'Lucas 11/11/2018 22:00:29'!
+!TerniLapilliView methodsFor: 'visiting TerniLapilli states' stamp: 'AC 11/12/2018 01:31:33'!
 visitWinnerIsO
 
-	lines at: 4 put: 'O Won!!'; yourself.! !
+	gameState := 'O Won!!'.! !
 
-!TerniLapilliView methodsFor: 'visiting TerniLapilli states' stamp: 'Lucas 11/11/2018 22:00:33'!
+!TerniLapilliView methodsFor: 'visiting TerniLapilli states' stamp: 'AC 11/12/2018 01:31:41'!
 visitWinnerIsX
 
-	lines at: 4 put: 'X Won!!'; yourself.! !
+	gameState := 'X Won!!'.! !
 
 
-!TerniLapilliView methodsFor: 'operations' stamp: 'Lucas 11/11/2018 22:21:39'!
+!TerniLapilliView methodsFor: 'operations' stamp: 'AC 11/12/2018 01:30:16'!
 lines
-	
-	| linesView aLine |
-	
-	linesView := OrderedCollection new.
-	
-	aLine := lines at: 1.
-	linesView add: aLine.
-	linesView add: '-----'.
-	aLine := lines at: 2.
-	linesView add: aLine.
-	linesView add: '-----'.
-	aLine := lines at: 3.
-	linesView add: aLine.
-	aLine := lines at: 4.
-	linesView add: aLine.
-	
-	^ReadStream on: linesView from: 1 to: (linesView size).! !
 
-!TerniLapilliView methodsFor: 'operations' stamp: 'Lucas 11/11/2018 20:58:21'!
+	| writeStream |
+	writeStream := String streamContents: [:stream | 
+				
+			stream nextPutAll: (lines at: 1).
+			stream newLine.
+			stream nextPutAll: '-----'.
+			stream newLine.
+			stream nextPutAll: (lines at: 2).
+			stream newLine.
+			stream nextPutAll: '-----'.
+			stream newLine.
+			stream nextPutAll: (lines at: 3).
+			stream newLine.
+			stream nextPutAll: gameState.
+		].
+	
+	^ReadStream on: (writeStream contents).! !
+
+!TerniLapilliView methodsFor: 'operations' stamp: 'AC 11/12/2018 00:32:59'!
 update: aTerniLapilliState
 
 	terniLapilli lastPlay accept: self.
-	aTerniLapilliState accept: self
-
-"
-	| lastPlay |
-	lastPlay _ terniLapilli lastPlay.
-	
-	lastPlay wasMadeByX ifTrue:[
-		(lastPlay isAMarking ) ifTrue: [lines add: 'X marcó en ', (lastPlay markedPosition printString)].
-		(lastPlay isASliding) ifTrue: [lines add: 'X deslizó hasta ', (lastPlay toPosition printString), ' desde ', (lastPlay fromPosition printString)].
-	]
-	ifFalse:[
-		(lastPlay isAMarking ) ifTrue: [lines add: 'O marcó en ', (lastPlay markedPosition printString)].
-		(lastPlay isASliding) ifTrue: [lines add: 'O deslizó hasta ', (lastPlay toPosition printString), ' desde ', (lastPlay fromPosition printString)].
-	].
-	
-	aTerniLapilliState accept: self
-	
-"! !
+	aTerniLapilliState accept: self! !
 
 
-!TerniLapilliView methodsFor: 'visiting TerniLapilli Plays' stamp: 'Lucas 11/11/2018 22:48:50'!
+!TerniLapilliView methodsFor: 'board updating - private' stamp: 'AC 11/12/2018 02:11:37'!
+in: aPosition write: aCharacter	
+	
+	| row rowView |
+	
+	"remove token from original position"
+	row := aPosition x.
+	rowView := (lines at: row) copy.
+	rowView at: (1 + ((aPosition y-1)*2)) put: aCharacter.
+	lines at: row put: rowView.! !
+
+
+!TerniLapilliView methodsFor: 'visiting TerniLapilli Plays' stamp: 'AC 11/12/2018 02:12:09'!
 visitMarkingPlayO: aTerniLapilliPlay
 
-	| aLine |
-	
-	aLine := lines at: aTerniLapilliPlay markedPosition y.
-	
-	((aTerniLapilliPlay markedPosition x) = 1) ifTrue: [aLine at: 1 put: $O].  
-	((aTerniLapilliPlay markedPosition x) = 2) ifTrue: [aLine at: 3 put: $O].  
-	((aTerniLapilliPlay markedPosition x) = 3) ifTrue: [aLine at: 5 put: $O]. 
-	
-	lines at: aTerniLapilliPlay markedPosition y put: aLine; yourself.! !
+	self in: (aTerniLapilliPlay markedPosition) write: $O.! !
 
-!TerniLapilliView methodsFor: 'visiting TerniLapilli Plays' stamp: 'Lucas 11/11/2018 22:48:38'!
+!TerniLapilliView methodsFor: 'visiting TerniLapilli Plays' stamp: 'AC 11/12/2018 02:12:22'!
 visitMarkingPlayX: aTerniLapilliPlay
 
-	| aLine |
-	
-	aLine := lines at: aTerniLapilliPlay markedPosition y.
-	
-	((aTerniLapilliPlay markedPosition x) = 1) ifTrue: [aLine at: 1 put: $X].  
-	((aTerniLapilliPlay markedPosition x) = 2) ifTrue: [aLine at: 3 put: $X].  
-	((aTerniLapilliPlay markedPosition x) = 3) ifTrue: [aLine at: 5 put: $X]. 
-	
-	lines at: aTerniLapilliPlay markedPosition y put: aLine; yourself.! !
+	self in: (aTerniLapilliPlay markedPosition) write: $X.! !
 
-!TerniLapilliView methodsFor: 'visiting TerniLapilli Plays' stamp: 'Lucas 11/11/2018 23:04:58'!
+!TerniLapilliView methodsFor: 'visiting TerniLapilli Plays' stamp: 'AC 11/12/2018 02:13:01'!
 visitSlidingPlayO: aTerniLapilliPlay
 
-	| aLine |
-	
-	self deleteFromPosition: aTerniLapilliPlay.	
-	
-	aLine := lines at: aTerniLapilliPlay toPosition y.
-	
-	(aTerniLapilliPlay toPosition x = 1) ifTrue: [aLine at: 1 put: $O].  
-	(aTerniLapilliPlay toPosition x = 2) ifTrue: [aLine at: 3 put: $O].  
-	(aTerniLapilliPlay toPosition x = 3) ifTrue: [aLine at: 5 put: $O]. 
-	
-	lines at: aTerniLapilliPlay toPosition y put: aLine; yourself.! !
+	self in: (aTerniLapilliPlay fromPosition) write: $ .
+	self in: (aTerniLapilliPlay toPosition ) write: $O.! !
 
-!TerniLapilliView methodsFor: 'visiting TerniLapilli Plays' stamp: 'Lucas 11/11/2018 23:05:02'!
+!TerniLapilliView methodsFor: 'visiting TerniLapilli Plays' stamp: 'AC 11/12/2018 02:13:12'!
 visitSlidingPlayX: aTerniLapilliPlay
 
-	| aLine |
-	
-	self deleteFromPosition: aTerniLapilliPlay.
-	
-	aLine := lines at: aTerniLapilliPlay toPosition y.
-	
-	(aTerniLapilliPlay toPosition x = 1) ifTrue: [aLine at: 1 put: $X].  
-	(aTerniLapilliPlay toPosition x = 2) ifTrue: [aLine at: 3 put: $X].  
-	(aTerniLapilliPlay toPosition x = 3) ifTrue: [aLine at: 5 put: $X]. 
-	
-	lines at: aTerniLapilliPlay toPosition y put: aLine; yourself.
-! !
-
-
-!TerniLapilliView methodsFor: 'as yet unclassified' stamp: 'Lucas 11/11/2018 23:04:41'!
-deleteFromPosition: aTerniLapilliPlay
-
-	| aLine |
-	
-	aLine := lines at: aTerniLapilliPlay fromPosition y.
-	
-	(aTerniLapilliPlay fromPosition x = 1) ifTrue: [aLine at: 1 put: $ ].  
-	(aTerniLapilliPlay fromPosition x = 2) ifTrue: [aLine at: 3 put: $ ].  
-	(aTerniLapilliPlay fromPosition x = 3) ifTrue: [aLine at: 5 put: $ ]. 
-	
-	lines at: aTerniLapilliPlay fromPosition y put: aLine; yourself.! !
+	self in: (aTerniLapilliPlay fromPosition) write: $ .
+	self in: (aTerniLapilliPlay toPosition ) write: $X.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
