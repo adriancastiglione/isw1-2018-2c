@@ -2909,59 +2909,6 @@ on: aTerniLapilli
 	^self new initializeOn: aTerniLapilli .! !
 
 
-!classDefinition: #TerniLapilliViewAux category: #TerniLapilliConsole!
-Object subclass: #TerniLapilliViewAux
-	instanceVariableNames: 'terniLapilli lines'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'TerniLapilliConsole'!
-
-!TerniLapilliViewAux methodsFor: 'initialization' stamp: 'Lucas 11/11/2018 20:58:04'!
-initializeOn: aTerniLapilli
-
-	terniLapilli := aTerniLapilli.
-	lines := OrderedCollection new.
-	lines add: ' | | '.
-	lines add: ' | | '.
-	lines add: ' | | '.
-	lines add: 'Playing X'.
-	! !
-
-
-!TerniLapilliViewAux methodsFor: 'as yet unclassified' stamp: 'Lucas 11/11/2018 20:58:04'!
-lines
-	
-	| linesView aLine |
-	
-	linesView := OrderedCollection new.
-	
-	aLine := lines at: 1.
-	linesView add: aLine.
-	linesView add: '-----'.
-	aLine := lines at: 2.
-	linesView add: aLine.
-	linesView add: '-----'.
-	aLine := lines at: 3.
-	linesView add: aLine.
-	aLine := lines at: 4.
-	linesView add: aLine.
-	
-	^ReadStream on: linesView from: 1 to: (linesView size).
-	
-	! !
-
-"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
-
-!classDefinition: 'TerniLapilliViewAux class' category: #TerniLapilliConsole!
-TerniLapilliViewAux class
-	instanceVariableNames: ''!
-
-!TerniLapilliViewAux class methodsFor: 'as yet unclassified' stamp: 'Lucas 11/11/2018 20:58:04'!
-on: aTerniLapilli
-
-	^self new initializeOn: aTerniLapilli! !
-
-
 !classDefinition: #ActiveVariable category: #TerniLapilliConsole!
 ProtoObject subclass: #ActiveVariable
 	instanceVariableNames: 'value observers'
