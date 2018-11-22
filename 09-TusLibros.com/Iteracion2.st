@@ -634,7 +634,7 @@ checkout: aCart with: aCreditCard
 	[paymentGateway debit: total from: aCreditCard] 
 	on: Error - MessageNotUnderstood  
 	do: [:anError | 
-		anError messageText = paymentGateway notEnoughFoundsErrorMessage   "Estos ifs prodrían reemplazarse haciendo una clase de error específica, pero a esta instacia al menos, lo consideramos sobrediseño"
+		anError messageText = paymentGateway notEnoughFoundsErrorMessage   "Estos ifs prodrÃ­an reemplazarse haciendo una clase de error especÃ­fica, pero a esta instacia al menos, lo consideramos sobrediseÃ±o"
 			ifTrue: [self error: self notEnoughFoundsErrorMessage ]
 			ifFalse: [self error:  anError messageText ].	
 	].
