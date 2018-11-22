@@ -179,19 +179,19 @@ test04CashierCheckoutsCorrectlyWithMultipleEqualsItems
 	self assert: ticket equals: 2*self itemSellByTheStorePrice.
 	! !
 
-!CashierTest methodsFor: 'tests' stamp: 'AC 11/15/2018 19:49:19'!
+!CashierTest methodsFor: 'tests' stamp: 'Lucas 11/22/2018 12:09:08'!
 test05CashierCheckoutsCorrectlyWithDifferentItems
 
 	| cashier carrito aCreditCard ticket |
 	cashier := self createCashier.
 	carrito := Cart acceptingItemsOf: self defaultCatalog.
 	carrito add: 2 of: self itemSellByTheStore.
-	carrito add: 3 of: self itemSellByTheStore2.
+	carrito add: 2 of: self itemSellByTheStore2.
 	aCreditCard := self createCreditCard.
 	
 	ticket := cashier checkOut: carrito with: aCreditCard.
 	
-	self assert: (ticket value) equals: ((2*self itemSellByTheStorePrice) + (3 * self itemSellByTheStore2Price)).
+	self assert: (ticket value) equals: ((2*self itemSellByTheStorePrice) + (2 * self itemSellByTheStore2Price)).
 	! !
 
 !CashierTest methodsFor: 'tests' stamp: 'Lucas 11/19/2018 22:55:48'!
@@ -270,40 +270,70 @@ test10MerchantProcessorCantDebitsWithExpiredCreditCard
 	self assert: (merchantProcessor creditCardNumber: aCreditCard name creditCardExpiration: aCreditCard expiration creditCardOwner: aCreditCard owner transactionAmout: 50) equals: '1|Credit_Card_Expired'.
 ! !
 
-!CashierTest methodsFor: 'tests' stamp: 'Lucas 11/19/2018 23:46:13'!
-test11CashierDebitsCorrectAmountFromCreditCard
+!CashierTest methodsFor: 'tests' stamp: 'Lucas 11/22/2018 11:47:55'!
+test11MerchantProcessorCantDebitsWhenTransaccionExceededCreditCardValue
 
-	| cashier carrito aCreditCard ticket merchantProcessor |
-	cashier := self createCashier.
-	carrito := Cart acceptingItemsOf: self defaultCatalog.
+	| aCreditCard merchantProcessor |
 	
 	merchantProcessor := self createMerchantProcessorSimulator.	
+	aCreditCard := self createCreditCard.
+	
+	self assert: (merchantProcessor creditCardNumber: aCreditCard number creditCardExpiration: aCreditCard expiration creditCardOwner: aCreditCard owner transactionAmout: 150.00) equals: '1|Insufficient_Credit_Card_Value'.
+! !
+
+!CashierTest methodsFor: 'tests' stamp: 'Lucas 11/22/2018 12:09:35'!
+test12CashierCantDebitsWhenTransaccionExceededCreditCardValue
+
+	| cashier carrito aCreditCard |
+	cashier := self createCashier.
+	carrito := Cart acceptingItemsOf: self defaultCatalog.	
 
 	carrito add: 2 of: self itemSellByTheStore.
 	carrito add: 3 of: self itemSellByTheStore2.
 	aCreditCard := self createCreditCard.
 	
+	self should: [cashier checkOut: carrito with: aCreditCard]
+	raise: Error - MessageNotUnderstood 
+	withExceptionDo: [:anError |
+						self assert: anError messageText = Cashier cantCheckOutWIthInsufficientCreditCardValueErrorMessage.
+		]. 
+	! !
+
+!CashierTest methodsFor: 'tests' stamp: 'Lucas 11/22/2018 12:09:57'!
+test13CashierDebitsCorrectWithCreditCard
+
+	| cashier carrito aCreditCard ticket |
+	cashier := self createCashier.
+	carrito := Cart acceptingItemsOf: self defaultCatalog.	
+
+	carrito add: 2 of: self itemSellByTheStore.
+	aCreditCard := self createCreditCard.
 	ticket := cashier checkOut: carrito with: aCreditCard.
 	
-	self assert: (merchantProcessor creditCardNumber: aCreditCard name creditCardExpiration: aCreditCard expiration creditCardOwner: aCreditCard owner transactionAmout: (ticket value))
-
+	self assert: ticket equals: 40.00
+	
 	! !
 
 
-!CashierTest methodsFor: 'support' stamp: 'AC 11/15/2018 19:21:58'!
+!CashierTest methodsFor: 'support' stamp: 'Lucas 11/22/2018 12:05:01'!
 createCashier
 	
-	^Cashier withProductList: (self defaultProductList).! !
+	| sales merchantProcessor |
+	sales := self defaultSalesList.
+	merchantProcessor := self createMerchantProcessorSimulator.
+	^Cashier withProductList: (self defaultProductList) andSaleslList: sales andMerchantProcessor: merchantProcessor.! !
 
-!CashierTest methodsFor: 'support' stamp: 'Lucas 11/19/2018 22:27:20'!
+!CashierTest methodsFor: 'support' stamp: 'Lucas 11/22/2018 11:45:39'!
 createCreditCard
 	
-	^CreditCard with: 4812184367762574 owner: 'Claudio Matias Perez' expirationDate: Date today.! !
+	^CreditCard with: 4812184367762574 owner: 'Claudio Matias Perez' expirationDate: Date today.
+	
+	! !
 
 !CashierTest methodsFor: 'support' stamp: 'Lucas 11/19/2018 22:40:40'!
 createCreditCard2
 	
-	^CreditCard with: 4712184367762582 owner: 'Brhadaranyakopanishadvivekachudamani Erreh Muñoz Castillo' expirationDate: Date today.! !
+	^CreditCard with: 4712184367762582 owner: 'Brhadaranyakopanishadvivekachudamani Erreh MuÃ±oz Castillo' expirationDate: Date today.! !
 
 !CashierTest methodsFor: 'support' stamp: 'Lucas 11/19/2018 22:29:37'!
 createCreditCardInvalid
@@ -320,7 +350,7 @@ defaultCatalog
 	
 	^ Array with: self itemSellByTheStore with: self itemSellByTheStore2 with: self itemSellByTheStore3! !
 
-!CashierTest methodsFor: 'support' stamp: 'Lucas 11/19/2018 23:18:38'!
+!CashierTest methodsFor: 'support' stamp: 'Lucas 11/22/2018 11:31:51'!
 defaultCreditCardValues
 	
 	| aCreditCardValues |
@@ -343,6 +373,11 @@ defaultProductList
 	dict at: (self itemSellByTheStore3) put: (self itemSellByTheStore3Price).
 	^dict.! !
 
+!CashierTest methodsFor: 'support' stamp: 'Lucas 11/22/2018 11:19:10'!
+defaultSalesList
+	
+	^ OrderedCollection new.! !
+
 !CashierTest methodsFor: 'support' stamp: 'AC 11/15/2018 18:32:07'!
 itemNotSellByTheStore
 	
@@ -358,25 +393,25 @@ itemSellByTheStore2
 	
 	^ 'validBook2'! !
 
-!CashierTest methodsFor: 'support' stamp: 'Lucas 11/19/2018 23:37:22'!
+!CashierTest methodsFor: 'support' stamp: 'Lucas 11/22/2018 11:26:13'!
 itemSellByTheStore2Price
 	
-	^ 15! !
+	^ 30.00! !
 
 !CashierTest methodsFor: 'support' stamp: 'Lucas 11/19/2018 23:16:45'!
 itemSellByTheStore3
 	
 	^ 'validBook3'! !
 
-!CashierTest methodsFor: 'support' stamp: 'Lucas 11/19/2018 23:28:05'!
+!CashierTest methodsFor: 'support' stamp: 'Lucas 11/22/2018 11:30:39'!
 itemSellByTheStore3Price
 	
-	^ 1000000000000000! !
+	^ 10000000000000000.00! !
 
-!CashierTest methodsFor: 'support' stamp: 'Lucas 11/19/2018 23:37:31'!
+!CashierTest methodsFor: 'support' stamp: 'Lucas 11/22/2018 11:26:24'!
 itemSellByTheStorePrice
 	
-	^ 10! !
+	^ 20.00! !
 
 
 !classDefinition: #Cart category: #TusLibros!
@@ -459,12 +494,12 @@ acceptingItemsOf: aCatalog
 
 !classDefinition: #Cashier category: #TusLibros!
 Object subclass: #Cashier
-	instanceVariableNames: 'productList'
+	instanceVariableNames: 'productList salesList merchantProcessor'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'TusLibros'!
 
-!Cashier methodsFor: 'operations' stamp: 'Lucas 11/19/2018 23:37:11'!
+!Cashier methodsFor: 'operations' stamp: 'Lucas 11/22/2018 12:16:51'!
 checkOut: aCart with: aCreditCard
 	
 	| price |
@@ -475,7 +510,11 @@ checkOut: aCart with: aCreditCard
 	price := 0.
 	productList keysAndValuesDo: [:anItem :aPrice  | (aCart includes: anItem) ifTrue:[price := price + ((aCart occurrencesOf: anItem)*aPrice)] ].
 	
-	(price asString size > 15) ifTrue: [self error: self class cantCheckOutWIthExceededAmountTransaccionErrorMessage].
+	(price > 999999999999999.99) ifTrue: [self error: self class cantCheckOutWIthExceededAmountTransaccionErrorMessage].
+	
+	((merchantProcessor creditCardNumber: aCreditCard number creditCardExpiration: aCreditCard expiration creditCardOwner: aCreditCard owner transactionAmout: price) = '1|Insufficient_Credit_Card_Value') ifTrue: [self error: self class cantCheckOutWIthInsufficientCreditCardValueErrorMessage].
+	
+	productList keysAndValuesDo: [:anItem :aPrice  | (aCart includes: anItem) ifTrue:[salesList add: (anItem->(aCart occurrencesOf: anItem))] ].
 	
 	"
 	(price isKindOf: Float) ifTrue: [(price integerPart asString size > 17) ifTrue: [self error: self class cantCheckOutWIthExceededAmountTransaccionErrorMessage]].
@@ -485,10 +524,12 @@ checkOut: aCart with: aCreditCard
 	^price.! !
 
 
-!Cashier methodsFor: 'initialization' stamp: 'AC 11/15/2018 19:14:46'!
-initializeWith: aProductList
+!Cashier methodsFor: 'initialization' stamp: 'Lucas 11/22/2018 12:06:28'!
+initializeWith: aProductList and: aSalesList and: aMerchantProcessor
 
-	productList := aProductList .! !
+	productList := aProductList.
+	salesList := aSalesList.
+	merchantProcessor := aMerchantProcessor! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -516,11 +557,16 @@ cantCheckOutWIthExpiredCardErrorMessage
 	
 	^'Credit card has expired.'! !
 
+!Cashier class methodsFor: 'errorMessage' stamp: 'Lucas 11/22/2018 11:36:05'!
+cantCheckOutWIthInsufficientCreditCardValueErrorMessage
+	
+	^'Cant check out with insufficient credit card value'! !
 
-!Cashier class methodsFor: 'class initialization' stamp: 'AC 11/15/2018 19:14:23'!
-withProductList: aProductList
 
-	^self new initializeWith: aProductList.! !
+!Cashier class methodsFor: 'class initialization' stamp: 'Lucas 11/22/2018 12:07:04'!
+withProductList: aProductList andSaleslList: aSalesList andMerchantProcessor: aMerchantProcessor
+
+	^self new initializeWith: aProductList and: aSalesList and: aMerchantProcessor.! !
 
 
 !classDefinition: #CreditCard category: #TusLibros!
@@ -584,13 +630,15 @@ initializeWith: aCreditCardValues
 	creditCardValues := aCreditCardValues.! !
 
 
-!MerchantProcessorSimulator methodsFor: 'operations' stamp: 'Lucas 11/20/2018 00:00:50'!
+!MerchantProcessorSimulator methodsFor: 'operations' stamp: 'Lucas 11/22/2018 12:03:12'!
 creditCardNumber: aNumber creditCardExpiration: aExpiration creditCardOwner: aName transactionAmout: aTransactionAmout
 
 	(aName size > 30) ifTrue: [self error: self class http400].
-	(aTransactionAmout asString size > 15) ifTrue: [self error: self class http400].
+	(aTransactionAmout > 999999999999999.99) ifTrue: [self error: self class http400].
 
-	(aExpiration < Date today) ifTrue: [^'1|Credit_Card_Expired'].! !
+	(aExpiration < Date today) ifTrue: [^'1|Credit_Card_Expired'].
+	
+	(aTransactionAmout > (creditCardValues at: aNumber)) ifTrue: [^'1|Insufficient_Credit_Card_Value'].! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
