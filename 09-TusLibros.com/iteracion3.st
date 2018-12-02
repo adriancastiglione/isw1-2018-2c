@@ -100,12 +100,12 @@ setUp
 
 !classDefinition: #CashierTest category: #TusLibros!
 TestCase subclass: #CashierTest
-	instanceVariableNames: 'testObjectsFactory debitBehavior'
+	instanceVariableNames: 'testObjectsFactory debitBehavior clientId'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'TusLibros'!
 
-!CashierTest methodsFor: 'tests' stamp: 'HernanWilkinson 6/17/2013 18:50'!
+!CashierTest methodsFor: 'tests' stamp: 'AC 12/2/2018 12:33:19'!
 test01CanNotCheckoutAnEmptyCart
 
 	| salesBook |
@@ -117,13 +117,13 @@ test01CanNotCheckoutAnEmptyCart
 			charging: testObjectsFactory notExpiredCreditCard 
 			throught: self
 			on: testObjectsFactory today
-			registeringOn:  salesBook ]
+			registeringOn:  salesBook forClient: clientId ]
 		raise: Error - MessageNotUnderstood
 		withExceptionDo: [ :anError |
 			self assert: anError messageText = Cashier cartCanNotBeEmptyErrorMessage.
 			self assert: salesBook isEmpty ]! !
 
-!CashierTest methodsFor: 'tests' stamp: 'HernanWilkinson 6/17/2013 18:51'!
+!CashierTest methodsFor: 'tests' stamp: 'AC 12/2/2018 12:33:19'!
 test02CalculatedTotalIsCorrect
 
 	| cart cashier |
@@ -136,11 +136,11 @@ test02CalculatedTotalIsCorrect
 		charging: testObjectsFactory notExpiredCreditCard 
 		throught: self
 		on: testObjectsFactory today 
-		registeringOn: OrderedCollection new.
+		registeringOn: OrderedCollection new forClient: clientId.
 		
 	self assert: cashier checkOut = (testObjectsFactory itemSellByTheStorePrice * 2)! !
 
-!CashierTest methodsFor: 'tests' stamp: 'HernanWilkinson 6/17/2013 18:51'!
+!CashierTest methodsFor: 'tests' stamp: 'AC 12/2/2018 12:33:19'!
 test03CanNotCheckoutWithAnExpiredCreditCart
 
 	| cart salesBook |
@@ -155,13 +155,13 @@ test03CanNotCheckoutWithAnExpiredCreditCart
 				charging: testObjectsFactory expiredCreditCard 
 				throught: self
 				on: testObjectsFactory today
-				registeringOn: salesBook ]
+				registeringOn: salesBook forClient: clientId ]
 		raise: Error - MessageNotUnderstood
 		withExceptionDo: [ :anError | 
 			self assert: anError messageText = Cashier canNotChargeAnExpiredCreditCardErrorMessage.
 			self assert: salesBook isEmpty ]! !
 
-!CashierTest methodsFor: 'tests' stamp: 'HernanWilkinson 6/17/2013 19:04'!
+!CashierTest methodsFor: 'tests' stamp: 'AC 12/2/2018 12:39:17'!
 test04CheckoutRegistersASale
 
 	| cart cashier salesBook total |
@@ -175,14 +175,18 @@ test04CheckoutRegistersASale
 		charging: testObjectsFactory notExpiredCreditCard
 		throught: self
 		on: testObjectsFactory today
-		registeringOn: salesBook.
+		registeringOn: salesBook 
+		forClient: clientId.
 		
 	total := cashier checkOut.
 					
 	self assert: salesBook size = 1.
-	self assert: salesBook first total = total.! !
+	self assert: salesBook first total = total.
+	self assert: salesBook first client = clientId.
+	self assert: (salesBook first items includes: testObjectsFactory itemSellByTheStore ).
+	self assert: (salesBook first items occurrencesOf: testObjectsFactory itemSellByTheStore) equals: 1.! !
 
-!CashierTest methodsFor: 'tests' stamp: 'HernanWilkinson 6/17/2013 19:00'!
+!CashierTest methodsFor: 'tests' stamp: 'AC 12/2/2018 12:33:19'!
 test05CashierChargesCreditCardUsingMerchantProcessor
 
 	| cart cashier salesBook total creditCard debitedAmout debitedCreditCard  |
@@ -197,7 +201,7 @@ test05CashierChargesCreditCardUsingMerchantProcessor
 		charging: creditCard
 		throught: self
 		on: testObjectsFactory today
-		registeringOn: salesBook.
+		registeringOn: salesBook forClient: clientId.
 		
 	debitBehavior := [ :anAmount :aCreditCard | 
 		debitedAmout := anAmount.
@@ -207,7 +211,7 @@ test05CashierChargesCreditCardUsingMerchantProcessor
 	self assert: debitedCreditCard = creditCard.
 	self assert: debitedAmout = total.! !
 
-!CashierTest methodsFor: 'tests' stamp: 'HernanWilkinson 6/17/2013 18:59'!
+!CashierTest methodsFor: 'tests' stamp: 'AC 12/2/2018 12:33:54'!
 test06CashierDoesNotSaleWhenTheCreditCardHasNoCredit
 
 	| cart cashier salesBook creditCard |
@@ -223,7 +227,8 @@ test06CashierDoesNotSaleWhenTheCreditCardHasNoCredit
 		charging: creditCard
 		throught: self
 		on: testObjectsFactory today
-		registeringOn: salesBook.
+		registeringOn: salesBook 
+		forClient: clientId.
 		
 	self 
 		should: [cashier checkOut ]
@@ -233,11 +238,12 @@ test06CashierDoesNotSaleWhenTheCreditCardHasNoCredit
 			self assert: salesBook isEmpty ]! !
 
 
-!CashierTest methodsFor: 'setup' stamp: 'HernanWilkinson 6/17/2013 19:03'!
+!CashierTest methodsFor: 'setup' stamp: 'AC 12/2/2018 12:33:19'!
 setUp 
 
 	testObjectsFactory := StoreTestObjectsFactory new.
-	debitBehavior := [ :anAmount :aCreditCard | ]! !
+	debitBehavior := [ :anAmount :aCreditCard | ].
+	clientId := 1.! !
 
 
 !CashierTest methodsFor: 'merchant processor protocol' stamp: 'HernanWilkinson 6/17/2013 19:02'!
@@ -253,15 +259,24 @@ TestCase subclass: #RestInterfaceTest
 	poolDictionaries: ''
 	category: 'TusLibros'!
 
-!RestInterfaceTest methodsFor: 'tests - cart creation' stamp: 'AC 11/30/2018 14:33:14'!
-test01CantCreateCartWithInvalidClientIdOrPassword
+!RestInterfaceTest methodsFor: 'tests - cart creation' stamp: 'AC 12/2/2018 15:41:00'!
+test01_01CantCreateCartWithInvalidClientId
 
-	validClientsData := Dictionary new.
-	
-	self should: [ interface createCartUsingId: self validClientId andPassword: self validPassword.]
+	self should: [ interface createCartUsingId: self invalidvalidClientId andPassword: self validPassword.]
 	raise: self functionalException
 	withExceptionDo: [ :anError | 
-		self assert: anError messageText = interface invalidUserOrPasswordErrorMessage.
+		self assert: anError messageText = interface invalidClientIdErrorMessage.
+	].
+	
+	! !
+
+!RestInterfaceTest methodsFor: 'tests - cart creation' stamp: 'AC 12/2/2018 15:40:47'!
+test01_02CantCreateCartWithInvalidPassword
+
+	self should: [ interface createCartUsingId: self validClientId andPassword: self invalidPassword.]
+	raise: self functionalException
+	withExceptionDo: [ :anError | 
+		self assert: anError messageText = interface invalidPasswordErrorMessage.
 	].
 	
 	! !
@@ -489,11 +504,11 @@ test14CantCheckoutEmptyCart
 	
 	! !
 
-!RestInterfaceTest methodsFor: 'tests - checking out' stamp: 'AC 11/30/2018 21:35:45'!
+!RestInterfaceTest methodsFor: 'tests - checking out' stamp: 'AC 12/1/2018 16:38:48'!
 test20CantCheckoutExpiredCart
 
 	interface addToCart: self validCartId theItem: self itemSellByTheStore withQuantity: 1.
-	self clock advanceInTime: (Duration minutes: 31).
+	self clock advanceInTime: (Duration minutes: 40).
 	
 	self should: [interface checkoutCartIdentifiedBy: self validCartId withCardNumbered: self validCardNumber expiringOn: self validExpirationDate ownedBy: self validOwner.] 
 	raise: self functionalException 
@@ -628,7 +643,7 @@ clock
 	
 	^clock.! !
 
-!RestInterfaceTest methodsFor: 'support' stamp: 'AC 11/30/2018 21:04:49'!
+!RestInterfaceTest methodsFor: 'support' stamp: 'AC 12/2/2018 15:59:25'!
 createInterface
 
 	^RestInterface 
@@ -653,6 +668,16 @@ functionalException
 invalidCartId
 
 	^nil! !
+
+!RestInterfaceTest methodsFor: 'support' stamp: 'AC 12/2/2018 15:38:23'!
+invalidPassword
+	
+	^'invalid password'! !
+
+!RestInterfaceTest methodsFor: 'support' stamp: 'AC 12/2/2018 15:37:52'!
+invalidvalidClientId
+	
+	^-1! !
 
 !RestInterfaceTest methodsFor: 'support' stamp: 'AC 11/27/2018 10:45:09'!
 itemSellByTheStore
@@ -695,17 +720,17 @@ validPassword
 	^'validPassword'! !
 
 
-!RestInterfaceTest methodsFor: 'authentication protocol' stamp: 'AC 11/30/2018 14:20:45'!
-idExists: aClientId
-
-	^validClientsData includesKey: aClientId.! !
-
-!RestInterfaceTest methodsFor: 'authentication protocol' stamp: 'AC 11/30/2018 14:17:04'!
-isValidId: aClientId andPassword: aPassword
+!RestInterfaceTest methodsFor: 'authentication protocol' stamp: 'AC 12/2/2018 14:48:27'!
+forClientIdentifiedBy: aClientId correctPasswordIs: aPassword
 
 	^(validClientsData includesKey: aClientId) and:[(validClientsData at: aClientId) = aPassword ].
 
 ! !
+
+!RestInterfaceTest methodsFor: 'authentication protocol' stamp: 'AC 11/30/2018 14:20:45'!
+idExists: aClientId
+
+	^validClientsData includesKey: aClientId.! !
 
 
 !RestInterfaceTest methodsFor: 'setup' stamp: 'AC 11/30/2018 21:08:37'!
@@ -834,9 +859,50 @@ invalidQuantityErrorMessage
 	^'Invalid number of items'! !
 
 
+!classDefinition: #CartSession category: #TusLibros!
+Object subclass: #CartSession
+	instanceVariableNames: 'clock lastUsedTime myInterface clientId cart'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'TusLibros'!
+
+!CartSession methodsFor: 'operations' stamp: 'AC 12/2/2018 13:54:30'!
+do: aBlock
+
+	((clock now - lastUsedTime) minutes < 30) ifFalse: [self error: self class cartHasExpiredErrorMessage].
+	lastUsedTime := clock now.
+	aBlock value: clientId value: cart.! !
+
+
+!CartSession methodsFor: 'initialization' stamp: 'AC 12/2/2018 13:41:15'!
+initializeForClient: aClientId usingCart: aCart WithClock: aClock 
+
+	clientId := aClientId.
+	cart := aCart.
+	clock := aClock .
+	lastUsedTime := clock now.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'CartSession class' category: #TusLibros!
+CartSession class
+	instanceVariableNames: ''!
+
+!CartSession class methodsFor: 'class initialization' stamp: 'AC 12/2/2018 13:43:50'!
+forClient: aClient usingCart: aCart withClock: aClock 
+
+	^self new initializeForClient: aClient usingCart: aCart WithClock: aClock .! !
+
+
+!CartSession class methodsFor: 'error messages' stamp: 'AC 12/2/2018 11:52:33'!
+cartHasExpiredErrorMessage
+
+	^'This cart has expired due to inactivity. Please create a new cart'.! !
+
+
 !classDefinition: #Cashier category: #TusLibros!
 Object subclass: #Cashier
-	instanceVariableNames: 'cart salesBook merchantProcessor creditCard total'
+	instanceVariableNames: 'cart salesBook merchantProcessor creditCard total items clientId'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'TusLibros'!
@@ -847,10 +913,10 @@ calculateTotal
 	total := cart total.
 	! !
 
-!Cashier methodsFor: 'checkout - private' stamp: 'HernanWilkinson 6/17/2013 19:07'!
+!Cashier methodsFor: 'checkout - private' stamp: 'AC 12/2/2018 12:38:20'!
 createSale
 
-	^ Sale of: total
+	^ Sale withItems: cart listItems of: total for: clientId 
 ! !
 
 !Cashier methodsFor: 'checkout - private' stamp: 'HernanWilkinson 6/17/2013 19:06'!
@@ -875,13 +941,14 @@ checkOut
 	^ total! !
 
 
-!Cashier methodsFor: 'initialization' stamp: 'HernanWilkinson 6/17/2013 18:53'!
-initializeToCheckout: aCart charging: aCreditCard throught: aMerchantProcessor registeringOn: aSalesBook
+!Cashier methodsFor: 'initialization' stamp: 'AC 12/2/2018 12:24:11'!
+initializeToCheckout: aCart charging: aCreditCard throught: aMerchantProcessor registeringOn: aSalesBook forClient: aClientId 
 	
 	cart := aCart.
 	creditCard := aCreditCard.
 	merchantProcessor := aMerchantProcessor.
-	salesBook := aSalesBook! !
+	salesBook := aSalesBook.
+	clientId := aClientId.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -900,13 +967,13 @@ assertIsNotExpired: aCreditCard on: aDate
 	(aCreditCard isExpiredOn: aDate) ifTrue: [ self error: self canNotChargeAnExpiredCreditCardErrorMessage ]! !
 
 
-!Cashier class methodsFor: 'instance creation' stamp: 'HernanWilkinson 6/17/2013 18:51'!
-toCheckout: aCart charging: aCreditCard throught: aMerchantProcessor on: aDate registeringOn: aSalesBook
+!Cashier class methodsFor: 'instance creation' stamp: 'AC 12/2/2018 12:20:29'!
+toCheckout: aCart charging: aCreditCard throught: aMerchantProcessor on: aDate registeringOn: aSalesBook forClient: aClientId 
 	
 	self assertIsNotEmpty: aCart.
 	self assertIsNotExpired: aCreditCard on: aDate.
 	
-	^self new initializeToCheckout: aCart charging: aCreditCard throught: aMerchantProcessor registeringOn: aSalesBook! !
+	^self new initializeToCheckout: aCart charging: aCreditCard throught: aMerchantProcessor registeringOn: aSalesBook forClient: aClientId! !
 
 
 !Cashier class methodsFor: 'error messages' stamp: 'HernanWilkinson 6/17/2013 18:21'!
@@ -959,27 +1026,10 @@ numbered: aCardNumber expiringOn: aMonth ownedBy: anOwnerName
 
 !classDefinition: #RestInterface category: #TusLibros!
 Object subclass: #RestInterface
-	instanceVariableNames: 'authenticator catalog carts nextId salesBook nextTransactionId merchantProcessor clientsId purchases purchasesTotals clock cartTimes'
+	instanceVariableNames: 'authenticator catalog carts nextId salesBook nextTransactionId merchantProcessor clientsId purchases purchasesTotals clock cartTimes cartSession sales'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'TusLibros'!
-
-!RestInterface methodsFor: 'cart creation' stamp: 'AC 11/30/2018 21:11:13'!
-createCartUsingId: anId andPassword: aPassword
-
-	| ret |
-	(authenticator isValidId: anId andPassword: aPassword) ifFalse: [self error: self invalidUserOrPasswordErrorMessage].
-	
-	carts at: nextId put: (Cart acceptingItemsOf: catalog).
-	cartTimes at: nextId put: (clock now).
-	
-	ret _ nextId.
-	nextId _ nextId + 1.
-	
-	clientsId at: ret put: anId.
-	^ret
-	! !
-
 
 !RestInterface methodsFor: 'error messages' stamp: 'AC 11/28/2018 22:46:36'!
 canNotChargeAnExpiredCreditCardErrorMessage
@@ -1016,91 +1066,118 @@ invalidItemErrorMessage
 	
 	^self class invalidItemErrorMessage! !
 
+!RestInterface methodsFor: 'error messages' stamp: 'AC 12/2/2018 15:40:08'!
+invalidPasswordErrorMessage
+	
+	^'Invalid user or password'! !
+
 !RestInterface methodsFor: 'error messages' stamp: 'AC 11/28/2018 22:41:50'!
 invalidQuantityErrorMessage
 	
 	^self class invalidQuantityErrorMessage! !
 
-!RestInterface methodsFor: 'error messages' stamp: 'AC 11/22/2018 20:11:50'!
-invalidUserOrPasswordErrorMessage
-	
-	^'Invalid user or password'! !
 
-
-!RestInterface methodsFor: 'initialization' stamp: 'AC 11/30/2018 21:12:44'!
+!RestInterface methodsFor: 'initialization' stamp: 'AC 12/2/2018 14:08:25'!
 initialIzeWith: anAuthenticator andCatalog: aCatalog andMerchantProcessor: aMerchantProcessor andSalesBook: aSalesBook withClock: aClock 
 
 	authenticator := anAuthenticator.
-	catalog := aCatalog .
-	carts := Dictionary new.
-	cartTimes := Dictionary new.
-	nextId := 1.
-	salesBook := aSalesBook.
-	nextTransactionId := 1.
+	catalog := aCatalog.
 	merchantProcessor := aMerchantProcessor.
-	clientsId := Dictionary new.
-	purchases := Dictionary new.
-	purchasesTotals := Dictionary new.
-	clock := aClock.! !
+	salesBook := aSalesBook.
+	clock := aClock.
+	
+	nextTransactionId := 1.
+	nextId := 1.
+	cartSession := Dictionary new.! !
 
 
-!RestInterface methodsFor: 'operations' stamp: 'AC 11/30/2018 21:28:20'!
+!RestInterface methodsFor: 'assertions - private' stamp: 'AC 12/2/2018 16:02:06'!
+assertIsValidCartId: aCartId thenDo: aBlock
+
+	(cartSession includesKey: aCartId) ifFalse: [self error: self invalidCartIdErrorMessage].
+	(cartSession at: aCartId) do: aBlock! !
+
+!RestInterface methodsFor: 'assertions - private' stamp: 'AC 12/2/2018 15:46:21'!
+assertIsValidClientId: aClientId
+
+	(authenticator idExists: aClientId) ifFalse:[self error: self invalidClientIdErrorMessage].! !
+
+
+!RestInterface methodsFor: 'rest resources' stamp: 'AC 12/2/2018 13:55:12'!
 addToCart: aCartId theItem: anItem withQuantity: aQuantity
 	
-	(carts includesKey: aCartId) ifFalse: [self error: self invalidCartIdErrorMessage].
-	((clock now - (cartTimes at: aCartId)) minutes < 30) ifFalse: [self error: self cartHasExpiredErrorMessage].
-	(carts at: aCartId ) add:aQuantity of: anItem .
-	cartTimes at: aCartId put: clock now.! !
+	(cartSession includesKey: aCartId) ifFalse: [self error: self invalidCartIdErrorMessage].
+	(cartSession at: aCartId) do: [:clientId :cart | cart add:aQuantity of: anItem ].! !
 
-!RestInterface methodsFor: 'operations' stamp: 'AC 11/30/2018 21:36:30'!
+!RestInterface methodsFor: 'rest resources' stamp: 'AC 12/2/2018 14:06:59'!
 checkoutCartIdentifiedBy: aCartId withCardNumbered: aCardNumber expiringOn: aDate ownedBy: aName 
 	
-	| today thisMonth cashier ret clientId |
+	| cashier ret |
 	
-	(carts includesKey: aCartId) ifFalse: [self error: self invalidCartIdErrorMessage].
-	((clock now - (cartTimes at: aCartId)) minutes < 30) ifFalse: [self error: self cartHasExpiredErrorMessage].
+	(cartSession includesKey: aCartId) ifFalse: [self error: self invalidCartIdErrorMessage].
 	
-	today := Date today .
-	thisMonth := (Month month: today monthIndex year: today yearNumber).
-	
-	cashier := Cashier 
-					toCheckout: (carts at: aCartId)
-					charging: (CreditCard numbered: aCardNumber expiringOn: aDate ownedBy: aName)
-					throught: merchantProcessor
-					on: thisMonth
-					registeringOn:  salesBook.
-		
-	
-	cashier checkOut.
-	
-	clientId := (clientsId at: aCartId ).
-	(purchases includesKey: clientId) ifTrue:[(purchases at: clientId) addAll: (carts at: aCartId) listItems] ifFalse:[purchases at: clientId put: (carts at: aCartId) listItems ].
-	(purchasesTotals includesKey: clientId) ifTrue:[purchasesTotals at: clientId put: (carts at: aCartId) total + (purchasesTotals at: clientId)] ifFalse:[purchasesTotals at: clientId put: (carts at: aCartId) total ].
-	carts removeKey: aCartId .
+	(cartSession at: aCartId) do: [ :clientId :cart |
+		cashier := Cashier 
+						toCheckout: cart
+						charging: (CreditCard numbered: aCardNumber expiringOn: aDate ownedBy: aName)
+						throught: merchantProcessor
+						on: clock today month
+						registeringOn:  salesBook 
+						forClient: clientId.
+
+		cashier checkOut.
+	].
+
+	cartSession removeKey: aCartId.
 	
 	ret := nextTransactionId.
 	nextTransactionId _ nextTransactionId + 1.
-	^ret.
-		
-! !
+	^ret.! !
 
-!RestInterface methodsFor: 'operations' stamp: 'AC 11/30/2018 21:40:33'!
+!RestInterface methodsFor: 'rest resources' stamp: 'AC 12/2/2018 15:46:15'!
+createCartUsingId: aClientId andPassword: aPassword
+
+	| ret |
+	self assertIsValidClientId: aClientId .
+	(authenticator forClientIdentifiedBy: aClientId correctPasswordIs: aPassword) ifFalse: [self error: self invalidPasswordErrorMessage].
+
+	cartSession at: nextId put: (
+		CartSession forClient: aClientId 
+						usingCart: (Cart acceptingItemsOf: catalog) 
+						withClock: self
+	).
+	
+	ret _ nextId.
+	nextId _ nextId + 1.
+	^ret
+	! !
+
+!RestInterface methodsFor: 'rest resources' stamp: 'AC 12/2/2018 13:55:32'!
 listCartWithId: aCartId
 
-	(carts includesKey: aCartId) ifFalse: [self error: self invalidCartIdErrorMessage].
-	((clock now - (cartTimes at: aCartId)) minutes < 30) ifFalse: [self error: self cartHasExpiredErrorMessage].
-	cartTimes at: aCartId put: clock now.
-	^(carts at:aCartId) listItems.
+	(cartSession includesKey: aCartId) ifFalse: [self error: self invalidCartIdErrorMessage].
+	(cartSession at: aCartId) do: [:clientId :cart | ^cart listItems.].
 	
 	! !
 
-!RestInterface methodsFor: 'operations' stamp: 'AC 11/30/2018 13:57:52'!
+!RestInterface methodsFor: 'rest resources' stamp: 'AC 12/2/2018 15:58:35'!
 listPurchasesOfClient: aClientId
 
-	| items |
-	(authenticator idExists: aClientId) ifFalse: [self error: self invalidClientIdErrorMessage].
-	items := purchases at: aClientId ifAbsent: [^Ticket empty] copy.
-	^Ticket withItems: items summingTotal: (purchasesTotals at: aClientId ).! !
+	| items total salesForClient |
+	self assertIsValidClientId: aClientId .
+	
+	items := Bag new.
+	total := 0.
+	salesForClient := salesBook select:[:sale | sale client = aClientId ].
+	salesForClient do: [:sale | sale client = aClientId ifTrue:[items addAll: sale items. total _ total + sale total]].
+	
+	^Ticket withItems: items summingTotal: total.! !
+
+
+!RestInterface methodsFor: 'time' stamp: 'AC 12/2/2018 11:49:49'!
+now
+
+	^clock now.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -1119,10 +1196,10 @@ canNotChargeAnExpiredCreditCardErrorMessage
 
 	^Cashier canNotChargeAnExpiredCreditCardErrorMessage.! !
 
-!RestInterface class methodsFor: 'error messages' stamp: 'AC 11/30/2018 21:15:31'!
+!RestInterface class methodsFor: 'error messages' stamp: 'AC 12/2/2018 11:52:25'!
 cartHasExpiredErrorMessage
 	
-	^'This cart has expired due to inactivity. Please create a new cart'.! !
+	^CartSession cartHasExpiredErrorMessage.! !
 
 !RestInterface class methodsFor: 'error messages' stamp: 'AC 11/30/2018 11:34:20'!
 cartIsEmptyErrorMessage
@@ -1152,10 +1229,20 @@ invalidQuantityErrorMessage
 
 !classDefinition: #Sale category: #TusLibros!
 Object subclass: #Sale
-	instanceVariableNames: 'total'
+	instanceVariableNames: 'total items clientId'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'TusLibros'!
+
+!Sale methodsFor: 'total' stamp: 'AC 12/2/2018 12:31:53'!
+client
+	
+	^ clientId! !
+
+!Sale methodsFor: 'total' stamp: 'AC 12/2/2018 12:31:44'!
+items
+	
+	^ items! !
 
 !Sale methodsFor: 'total' stamp: 'HernanWilkinson 6/17/2013 18:48'!
 total
@@ -1163,10 +1250,13 @@ total
 	^ total! !
 
 
-!Sale methodsFor: 'initialization' stamp: 'HernanWilkinson 6/17/2013 18:47'!
-initializeTotal: aTotal
+!Sale methodsFor: 'initialization' stamp: 'AC 12/2/2018 12:30:16'!
+initializeWithItems: anItemCollection ofTotal: aTotal forClient: aClientId
 
-	total := aTotal ! !
+	items := anItemCollection.
+	total := aTotal.
+	clientId := aClientId.
+	 ! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -1174,11 +1264,12 @@ initializeTotal: aTotal
 Sale class
 	instanceVariableNames: ''!
 
-!Sale class methodsFor: 'instance creation' stamp: 'HernanWilkinson 6/17/2013 18:47'!
-of: aTotal
+!Sale class methodsFor: 'instance creation' stamp: 'AC 12/2/2018 12:30:58'!
+withItems: items of: aTotal for: aClientId 
 
 	"should assert total is not negative or 0!!"
-	^self new initializeTotal: aTotal ! !
+	^self new initializeWithItems: items ofTotal: aTotal forClient: aClientId 
+	! !
 
 
 !classDefinition: #StoreTestObjectsFactory category: #TusLibros!
