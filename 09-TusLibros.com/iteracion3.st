@@ -1026,7 +1026,7 @@ numbered: aCardNumber expiringOn: aMonth ownedBy: anOwnerName
 
 !classDefinition: #RestInterface category: #TusLibros!
 Object subclass: #RestInterface
-	instanceVariableNames: 'authenticator catalog carts nextId salesBook nextTransactionId merchantProcessor clientsId purchases purchasesTotals clock cartTimes cartSession sales'
+	instanceVariableNames: 'authenticator catalog salesBook nextTransactionId merchantProcessor clock cartSessions nextCartId'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'TusLibros'!
@@ -1077,7 +1077,7 @@ invalidQuantityErrorMessage
 	^self class invalidQuantityErrorMessage! !
 
 
-!RestInterface methodsFor: 'initialization' stamp: 'AC 12/2/2018 14:08:25'!
+!RestInterface methodsFor: 'initialization' stamp: 'AC 12/2/2018 16:34:35'!
 initialIzeWith: anAuthenticator andCatalog: aCatalog andMerchantProcessor: aMerchantProcessor andSalesBook: aSalesBook withClock: aClock 
 
 	authenticator := anAuthenticator.
@@ -1087,36 +1087,39 @@ initialIzeWith: anAuthenticator andCatalog: aCatalog andMerchantProcessor: aMerc
 	clock := aClock.
 	
 	nextTransactionId := 1.
-	nextId := 1.
-	cartSession := Dictionary new.! !
+	nextCartId := 1.
+	cartSessions := Dictionary new.! !
 
 
-!RestInterface methodsFor: 'assertions - private' stamp: 'AC 12/2/2018 16:02:06'!
-assertIsValidCartId: aCartId thenDo: aBlock
+!RestInterface methodsFor: 'assertions - private' stamp: 'AC 12/2/2018 16:33:25'!
+assertIsValidCartId: aCartId thenWithSessionDo: aBlock
 
-	(cartSession includesKey: aCartId) ifFalse: [self error: self invalidCartIdErrorMessage].
-	(cartSession at: aCartId) do: aBlock! !
+	(cartSessions includesKey: aCartId) ifFalse: [self error: self invalidCartIdErrorMessage].
+	(cartSessions at: aCartId) do: aBlock! !
 
 !RestInterface methodsFor: 'assertions - private' stamp: 'AC 12/2/2018 15:46:21'!
 assertIsValidClientId: aClientId
 
 	(authenticator idExists: aClientId) ifFalse:[self error: self invalidClientIdErrorMessage].! !
 
+!RestInterface methodsFor: 'assertions - private' stamp: 'AC 12/2/2018 16:36:21'!
+assertSessionCanStartWithClientId: aClientId andPassword: aPassword
+	
+	(authenticator forClientIdentifiedBy: aClientId correctPasswordIs: aPassword) ifFalse: [self error: self invalidPasswordErrorMessage].! !
 
-!RestInterface methodsFor: 'rest resources' stamp: 'AC 12/2/2018 13:55:12'!
+
+!RestInterface methodsFor: 'rest resources' stamp: 'AC 12/2/2018 16:26:01'!
 addToCart: aCartId theItem: anItem withQuantity: aQuantity
 	
-	(cartSession includesKey: aCartId) ifFalse: [self error: self invalidCartIdErrorMessage].
-	(cartSession at: aCartId) do: [:clientId :cart | cart add:aQuantity of: anItem ].! !
+	self assertIsValidCartId: aCartId thenWithSessionDo:  [:clientId :cart | cart add:aQuantity of: anItem ].
+! !
 
-!RestInterface methodsFor: 'rest resources' stamp: 'AC 12/2/2018 14:06:59'!
+!RestInterface methodsFor: 'rest resources' stamp: 'AC 12/2/2018 16:33:25'!
 checkoutCartIdentifiedBy: aCartId withCardNumbered: aCardNumber expiringOn: aDate ownedBy: aName 
 	
-	| cashier ret |
-	
-	(cartSession includesKey: aCartId) ifFalse: [self error: self invalidCartIdErrorMessage].
-	
-	(cartSession at: aCartId) do: [ :clientId :cart |
+	| currentTransactionId |
+	self assertIsValidCartId: aCartId thenWithSessionDo: [ :clientId :cart | 
+		| cashier |
 		cashier := Cashier 
 						toCheckout: cart
 						charging: (CreditCard numbered: aCardNumber expiringOn: aDate ownedBy: aName)
@@ -1128,48 +1131,46 @@ checkoutCartIdentifiedBy: aCartId withCardNumbered: aCardNumber expiringOn: aDat
 		cashier checkOut.
 	].
 
-	cartSession removeKey: aCartId.
+	cartSessions removeKey: aCartId. "finalize session".
 	
-	ret := nextTransactionId.
+	currentTransactionId := nextTransactionId.
 	nextTransactionId _ nextTransactionId + 1.
-	^ret.! !
+	^currentTransactionId.! !
 
-!RestInterface methodsFor: 'rest resources' stamp: 'AC 12/2/2018 15:46:15'!
+!RestInterface methodsFor: 'rest resources' stamp: 'AC 12/2/2018 16:35:31'!
 createCartUsingId: aClientId andPassword: aPassword
 
-	| ret |
+	| cartId |
 	self assertIsValidClientId: aClientId .
-	(authenticator forClientIdentifiedBy: aClientId correctPasswordIs: aPassword) ifFalse: [self error: self invalidPasswordErrorMessage].
+	self assertSessionCanStartWithClientId: aClientId andPassword: aPassword.
 
-	cartSession at: nextId put: (
+	cartSessions at: nextCartId put: (
 		CartSession forClient: aClientId 
 						usingCart: (Cart acceptingItemsOf: catalog) 
 						withClock: self
 	).
 	
-	ret _ nextId.
-	nextId _ nextId + 1.
-	^ret
-	! !
+	cartId _ nextCartId.
+	nextCartId _ nextCartId + 1.
+	^cartId	! !
 
-!RestInterface methodsFor: 'rest resources' stamp: 'AC 12/2/2018 13:55:32'!
+!RestInterface methodsFor: 'rest resources' stamp: 'AC 12/2/2018 16:26:01'!
 listCartWithId: aCartId
 
-	(cartSession includesKey: aCartId) ifFalse: [self error: self invalidCartIdErrorMessage].
-	(cartSession at: aCartId) do: [:clientId :cart | ^cart listItems.].
+	self assertIsValidCartId: aCartId thenWithSessionDo: [:clientId :cart | ^cart listItems.].
 	
 	! !
 
-!RestInterface methodsFor: 'rest resources' stamp: 'AC 12/2/2018 15:58:35'!
+!RestInterface methodsFor: 'rest resources' stamp: 'AC 12/2/2018 16:29:53'!
 listPurchasesOfClient: aClientId
 
-	| items total salesForClient |
+	| items total sales |
 	self assertIsValidClientId: aClientId .
 	
 	items := Bag new.
 	total := 0.
-	salesForClient := salesBook select:[:sale | sale client = aClientId ].
-	salesForClient do: [:sale | sale client = aClientId ifTrue:[items addAll: sale items. total _ total + sale total]].
+	sales := salesBook select:[:sale | sale client = aClientId ].
+	sales do: [:sale | sale client = aClientId ifTrue:[items addAll: sale items. total _ total + sale total]].
 	
 	^Ticket withItems: items summingTotal: total.! !
 
