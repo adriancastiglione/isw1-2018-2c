@@ -861,7 +861,7 @@ invalidQuantityErrorMessage
 
 !classDefinition: #CartSession category: #TusLibros!
 Object subclass: #CartSession
-	instanceVariableNames: 'clock lastUsedTime myInterface clientId cart'
+	instanceVariableNames: 'clock lastUsedTime clientId cart'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'TusLibros'!
